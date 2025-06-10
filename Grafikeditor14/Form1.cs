@@ -421,52 +421,35 @@ namespace Grafikeditor14
         {
             if (_selection.Count == 0) return;
 
-            _state.ActiveControl = _selection[0];
+            _state.ActiveControl = _selection[0];         // Lead synchron halten
 
-            if (e.Button != MouseButtons.Left || _selection[0] == null)
-                return;
+            if (e.Button != MouseButtons.Left) return;
 
-            _selection[0].Left = e.X + _selection[0].Left - _mouseDownLocationL.X;
-            _selection[0].Top = e.Y + _selection[0].Top - _mouseDownLocationL.Y;
+            Control lead = _selection[0];
+            lead.Left = e.X + lead.Left - _mouseDownLocationL.X;
+            lead.Top = e.Y + lead.Top - _mouseDownLocationL.Y;
 
             if (highlightBorder.Visible)
             {
                 highlightBorder.Bounds = new Rectangle(
-                    _selection[0].Left - 2,
-                    _selection[0].Top - 2,
-                    _selection[0].Width + 4,
-                    _selection[0].Height + 4
-                );
+                    lead.Left - 2, lead.Top - 2, lead.Width + 4, lead.Height + 4);
             }
         }
 
         private void FeldInPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            if (_selection.Count == 0) return;
+            if (_selection.Count == 0 || e.Button != MouseButtons.Left) return;
 
-            if (e.Button != MouseButtons.Left || _selection[0] == null)
-                return;
+            _state.ActiveControl = _selection[0];
+            Control lead = _selection[0];
 
-            Point snapped = SnapToGrid(_selection[0].Location);
-            var cmd = new MoveCommand(_selection[0], snapped);
-            _undoMgr.Do(cmd);
-            _selection[0].Location = snapped;
+            Point snapped = SnapToGrid(lead.Location);
+            _undoMgr.Do(new MoveCommand(lead, snapped));
+            lead.Location = snapped;
 
             highlightBorder.Bounds = new Rectangle(
-                _selection[0].Left - 2,
-                _selection[0].Top - 2,
-                _selection[0].Width + 4,
-                _selection[0].Height + 4);
+                lead.Left - 2, lead.Top - 2, lead.Width + 4, lead.Height + 4);
             highlightBorder.SendToBack();
-
-            Control clicked = sender as Control;
-            
-            int dx = Math.Abs(e.Location.X - _mouseDownLocationL.X);
-            int dy = Math.Abs(e.Location.Y - _mouseDownLocationL.Y);
-
-            bool isSimpleClick = dx < SystemInformation.DoubleClickSize.Width / 2 &&
-                                 dy < SystemInformation.DoubleClickSize.Height / 2;
-            _state.ActiveControl = _selection[0];
         }
 
         private Point SnapToGrid(Point position)
@@ -567,7 +550,7 @@ namespace Grafikeditor14
 
         private void panel2_MouseDown(object sender, MouseEventArgs e)
         {
-            if (panel2.GetChildAtPoint(e.Location) == null)
+            if (panel2.GetChildAtPoint(e.Location) == null)   // Klick ins Leere
                 ClearSelection();
         }
 
@@ -839,42 +822,47 @@ namespace Grafikeditor14
 
         private void VerarbeiteResize(int dxSign, int dySign)
         {
-            Control c = _state.ActiveControl;
             int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
 
-            Size ziel = new Size(
-                Math.Max(5, c.Width + dxSign * step),
-                Math.Max(5, c.Height + dySign * step));
+            foreach (Control c in _selection)
+            {
+                Size ziel = new Size(
+                    Math.Max(5, c.Width + dxSign * step),
+                    Math.Max(5, c.Height + dySign * step));
 
-            _undoMgr.Do(new ResizeCommand(c, ziel));
-            ZeigeHighlightUm(c);
+                _undoMgr.Do(new ResizeCommand(c, ziel));
+            }
+            RefreshHighlight();
         }
 
         private void VerarbeiteMove(int dxSign, int dySign)
         {
-            Control c = _state.ActiveControl;
             int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
 
-            Point ziel = new Point(c.Left + dxSign * step,
-                                   c.Top + dySign * step);
+            foreach (Control c in _selection)
+            {
+                Point ziel = new Point(c.Left + dxSign * step,
+                                       c.Top + dySign * step);
 
-            if (_state.RasterAktiv)
-                ziel = SnapToGrid(ziel);
+                if (_state.RasterAktiv)
+                    ziel = SnapToGrid(ziel);
 
-            _undoMgr.Do(new MoveCommand(c, ziel));
-            ZeigeHighlightUm(c);
+                _undoMgr.Do(new MoveCommand(c, ziel));
+            }
+            RefreshHighlight();
         }
 
         private void SetActive(Control ctrl)
         {
-            ClearSelection();
-            if (ctrl != null) AddToSelection(ctrl);
+            ClearSelection();                // vorherige Auswahl komplett löschen
+            if (ctrl != null)
+                AddToSelection(ctrl);        // löst ActiveControl + Highlight aus
         }
 
         private void ClearSelection()
         {
             _selection.Clear();
-            _state.ActiveControl = null;
+            _state.ActiveControl = null;     // wichtig für Pfeiltasten-Routing
             highlightBorder.Visible = false;
             richTextBox7.Clear();
         }
@@ -883,8 +871,10 @@ namespace Grafikeditor14
         {
             if (!_selection.Contains(ctrl))
                 _selection.Add(ctrl);
-            _state.ActiveControl = ctrl;
+
+            _state.ActiveControl = ctrl;     // Lead-Control immer setzen
             RefreshHighlight();
+
             if (_selection.Count == 1)
                 DisplayFieldProperties(ctrl);
             else
@@ -908,15 +898,20 @@ namespace Grafikeditor14
 
         private void RefreshHighlight()
         {
-            if (_selection.Count == 0) { highlightBorder.Visible = false; return; }
+            if (_selection.Count == 0)
+            {
+                highlightBorder.Visible = false;
+                return;
+            }
 
             Rectangle r = _selection[0].Bounds;
             foreach (Control c in _selection.Skip(1))
                 r = Rectangle.Union(r, c.Bounds);
 
-            highlightBorder.Bounds = new Rectangle(r.Left - 2, r.Top - 2, r.Width + 4, r.Height + 4);
+            highlightBorder.Bounds = new Rectangle(r.Left - 2, r.Top - 2,
+                                                   r.Width + 4, r.Height + 4);
             highlightBorder.Visible = true;
-            highlightBorder.BringToFront();
+            highlightBorder.BringToFront();      // immer über den Feldern
         }
 
         private void tSB_Auswahlen_off_Click(object sender, EventArgs e)
