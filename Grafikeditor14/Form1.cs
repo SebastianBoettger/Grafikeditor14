@@ -16,6 +16,7 @@ namespace Grafikeditor14
         public Form1()
         {
             InitializeComponent();
+            this.KeyPreview = true;
         }
 
         private readonly UndoRedoManager _undoMgr = new UndoRedoManager();
@@ -491,6 +492,8 @@ namespace Grafikeditor14
         // Ereignishandler für das Bewegen der Maus
         private void FeldInPanel_MouseMove(object sender, MouseEventArgs e)
         {
+            _state.ActiveControl = sender as Control;
+
             if (e.Button != MouseButtons.Left || activeControl == null)
                 return;
 
@@ -1033,6 +1036,8 @@ namespace Grafikeditor14
             //    case Keys.Down: HandleArrow(ctrl, 0, 1); return true;
             //}
             //return base.ProcessCmdKey(ref msg, keyData);
+
+            System.Diagnostics.Debug.WriteLine("KeyData=" + keyData);
 
             if (_state.ActiveControl == null)
                 return base.ProcessCmdKey(ref msg, keyData);
