@@ -124,9 +124,18 @@ namespace Grafikeditor14
             highlightBorder = new Panel
             {
                 Size = new Size(0, 0),
-                BackColor = Color.Red,
+                BackColor = Color.Transparent,
                 Visible = false,
                 Enabled = false
+            };
+            highlightBorder.Paint += (s, pe) =>
+            {
+                using (Pen p = new Pen(Color.Red, 2))            // 2-Pixel-Rand
+                    pe.Graphics.DrawRectangle(
+                        p,                                       // Stift
+                        0, 0,                                    // links-oben
+                        highlightBorder.Width - 1,              // Breite
+                        highlightBorder.Height - 1);             // Höhe
             };
             panel2.Controls.Add(highlightBorder);
             highlightBorder.SendToBack();
@@ -908,10 +917,15 @@ namespace Grafikeditor14
             foreach (Control c in _selection.Skip(1))
                 r = Rectangle.Union(r, c.Bounds);
 
-            highlightBorder.Bounds = new Rectangle(r.Left - 2, r.Top - 2,
-                                                   r.Width + 4, r.Height + 4);
+            // exakt 2-px Abstand rundum
+            highlightBorder.Bounds = new Rectangle(
+                r.Left - 2,
+                r.Top - 2,
+                r.Width + 4,
+                r.Height + 4);
+
             highlightBorder.Visible = true;
-            highlightBorder.BringToFront();      // immer über den Feldern
+            highlightBorder.SendToBack();
         }
 
         private void tSB_Auswahlen_off_Click(object sender, EventArgs e)
