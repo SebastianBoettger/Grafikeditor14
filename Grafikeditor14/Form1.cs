@@ -445,7 +445,8 @@ namespace Grafikeditor14
             newLabel.Click += NeuesLabel_Click;
 
             panel2.Controls.Add(newLabel);
-            activeControl = newLabel;
+            SetActive(newLabel);
+            //activeControl = newLabel;
             newLabel.Focus();
             activeControl.BringToFront();
 
@@ -481,6 +482,8 @@ namespace Grafikeditor14
 
             //    DisplayFieldProperties(activeControl); // Eigenschaften anzeigen
             //}
+
+            SetActive(sender as Control);
 
             if (e.Button == MouseButtons.Left)
             {
@@ -678,6 +681,8 @@ namespace Grafikeditor14
                 panel2.Controls.Add(panel);
                 panel2.Controls.Remove(activeControl);
                 activeControl.Dispose();
+
+                SetActive(panel);
                 activeControl = panel;
                 activeControl.BringToFront();
 
@@ -706,6 +711,8 @@ namespace Grafikeditor14
                 panel2.Controls.Add(label);
                 panel2.Controls.Remove(activeControl);
                 activeControl.Dispose();
+
+                SetActive(label);
                 activeControl = label;
                 activeControl.BringToFront();
 
@@ -829,7 +836,8 @@ namespace Grafikeditor14
             kopie.Focus();
 
             // Auswahlrahmen anzeigen
-            activeControl = kopie;
+            SetActive(kopie);
+            //activeControl = kopie;
             ZeigeHighlightUm(kopie);
             highlightBorder.SendToBack();
 
@@ -1037,7 +1045,7 @@ namespace Grafikeditor14
             //}
             //return base.ProcessCmdKey(ref msg, keyData);
 
-            System.Diagnostics.Debug.WriteLine("KeyData=" + keyData);
+            //System.Diagnostics.Debug.WriteLine("KeyData=" + keyData);
 
             if (_state.ActiveControl == null)
                 return base.ProcessCmdKey(ref msg, keyData);
@@ -1062,6 +1070,28 @@ namespace Grafikeditor14
 
             return true;  // Taste verarbeitet
         }
+
+        //protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        //{
+        //    if (_state.ActiveControl == null) return base.ProcessCmdKey(ref msg, keyData);
+
+        //    bool ctrl = (keyData & Keys.Control) == Keys.Control;
+        //    Keys arrow = keyData & ~Keys.Control;
+
+        //    int dx = 0, dy = 0;
+        //    if (arrow == Keys.Left) dx = -1;
+        //    if (arrow == Keys.Right) dx = 1;
+        //    if (arrow == Keys.Up) dy = -1;
+        //    if (arrow == Keys.Down) dy = 1;
+        //    if (dx == 0 && dy == 0) return base.ProcessCmdKey(ref msg, keyData);
+
+        //    if (ctrl)
+        //        VerarbeiteResize(dx, dy);
+        //    else
+        //        VerarbeiteMove(dx, dy);
+
+        //    return true;                      // Taste verarbeitet
+        //}
 
         private void VerarbeiteResize(int dxSign, int dySign)
         {
@@ -1127,6 +1157,13 @@ namespace Grafikeditor14
             }
 
             ZeigeHighlightUm(c);          // roten Rahmen anpassen
+        }
+
+        private void SetActive(Control ctrl)
+        {
+            _state.ActiveControl = ctrl;   // zentrale Variable
+            if (ctrl != null) ctrl.Focus();
+            ZeigeHighlightUm(ctrl);
         }
     }
 }
