@@ -25,7 +25,7 @@ namespace Grafikeditor14
         private readonly List<Control> _selection = new List<Control>();
 
         #region allgemeine Funktion
-        // Fenster bewegen
+        
         private bool isMouseDown = false;
         private Point lastLocation;
 
@@ -51,26 +51,7 @@ namespace Grafikeditor14
             isMouseDown = false;
         }
 
-        // Resize-Griff zeichnen
         Panel resizeOverlay;
-
-        private void InitializeResizeOverlay()
-        {
-            resizeOverlay = new Panel();
-            resizeOverlay.Width = 20;
-            resizeOverlay.Height = 20;
-            resizeOverlay.BackColor = Color.Transparent;
-            resizeOverlay.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            resizeOverlay.Location = new Point(this.ClientSize.Width - resizeOverlay.Width, this.ClientSize.Height - resizeOverlay.Height);
-            resizeOverlay.Paint += ResizeOverlay_Paint;
-            resizeOverlay.Cursor = Cursors.SizeNWSE;
-            resizeOverlay.MouseDown += ResizeOverlay_MouseDown;
-            resizeOverlay.MouseMove += ResizeOverlay_MouseMove;
-            resizeOverlay.MouseUp += ResizeOverlay_MouseUp;
-
-            this.Controls.Add(resizeOverlay);
-            resizeOverlay.BringToFront();
-        }
 
         private void ResizeOverlay_Paint(object sender, PaintEventArgs e)
         {
@@ -78,37 +59,6 @@ namespace Grafikeditor14
             ControlPaint.DrawSizeGrip(e.Graphics, this.BackColor, gripRect);
         }
 
-        private bool resizing = false;
-        private Point lastMouse;
-
-        private void ResizeOverlay_MouseDown(object sender, MouseEventArgs e)
-        {
-            resizing = true;
-            lastMouse = Cursor.Position;
-        }
-
-        private void ResizeOverlay_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (resizing)
-            {
-                Point current = Cursor.Position;
-                int dx = current.X - lastMouse.X;
-                int dy = current.Y - lastMouse.Y;
-
-                this.Width += dx;
-                this.Height += dy;
-
-                lastMouse = current;
-            }
-            CenterPanelInTabPage();
-        }
-
-        private void ResizeOverlay_MouseUp(object sender, MouseEventArgs e)
-        {
-            resizing = false;
-        }
-
-        // Fenstergröße anpassen
         private const int WM_NCHITTEST = 0x84;
         private const int HTBOTTOMRIGHT = 17;
         private const int cGrip = 16;
@@ -138,7 +88,6 @@ namespace Grafikeditor14
 
                 Point pos = this.PointToClient(new Point(m.LParam.ToInt32() & 0xFFFF, m.LParam.ToInt32() >> 16));
 
-                // Gleicher Offset wie oben
                 int offsetX = 2;
                 int offsetY = 2;
 
@@ -164,7 +113,6 @@ namespace Grafikeditor14
             scrollPaddingPanel.BackColor = Color.Transparent;
             tabPage1.Controls.Add(scrollPaddingPanel);
 
-            InitializeResizeOverlay();
             CenterPanelInTabPage();
             toolStripDropDownButton2.DropDown.AutoClose = false;
 
@@ -173,16 +121,15 @@ namespace Grafikeditor14
 
             toolStripTextBox3.Text = rasterAbstand.ToString();
 
-            // Roter Rahmen zur Hervorhebung vorbereiten
             highlightBorder = new Panel
             {
                 Size = new Size(0, 0),
                 BackColor = Color.Red,
                 Visible = false,
-                Enabled = false // verhindert Interaktionen
+                Enabled = false
             };
             panel2.Controls.Add(highlightBorder);
-            highlightBorder.SendToBack(); // Damit es unter dem aktiven Feld liegt
+            highlightBorder.SendToBack();
 
             toolStripStatusLabel1.Text = panel1.Location.X.ToString() + " " + panel1.Location.Y.ToString() + "  " + panel1.Width.ToString() + " " + panel1.Height.ToString();
         }
@@ -191,7 +138,7 @@ namespace Grafikeditor14
         #endregion
 
         #region Kopfzeile Funktion
-        // Datei Beenden
+        
         private void beendenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -199,7 +146,7 @@ namespace Grafikeditor14
         #endregion
 
         #region Anzeigezeile
-        // Zentrieren horizontal und vertikal von panel1 in tabPage1
+        
         private void CenterPanelInTabPage()
         {
             if (tabPage1 == null || panel1 == null)
@@ -233,7 +180,7 @@ namespace Grafikeditor14
         }
         #endregion
 
-        // Panelgröße
+        
         List<int> zwischenspeicher_differenz = new List<int>();
         private void toolStripMenuItemOK_Panelgröße_Click(object sender, EventArgs e)
         {
@@ -253,7 +200,6 @@ namespace Grafikeditor14
 
             if (zwischenspeicher_differenz[1] > 0 && panel2.Height >= 313)
             {
-                // Höhe berechnen (inkl. Menü, ToolStrip, StatusStrip und Puffersumme)
                 int uiOverhead = zwischenspeicher_differenz[1];
 
                 int desiredHeight = this.Height + uiOverhead;
@@ -261,23 +207,17 @@ namespace Grafikeditor14
                 Rectangle workingArea = currentScreen.WorkingArea;
                 int screenMaxHeight = workingArea.Height - (2 * safetyMargin);
 
-                // Begrenzung zwischen Mindesthöhe und Bildschirmhöhe
                 int newFormHeight = Math.Min(Math.Max(desiredHeight, minFormHeight), screenMaxHeight);
                 this.Height = newFormHeight;
 
-                // 3 tableLayputPanel1-Row2-Höhe anpassen
-                    // 3.1 Begrenzung für tableLayputPanel1-Row2-Höhe
-                // 3.1
                 int maxHeightTableLayoutPanel1Row2 = screenMaxHeight - 598;
-                // 3
+                
                 float currentHeightOfTableLayoutPanel1Row2 = tableLayoutPanel1.RowStyles[2].Height;
                 tableLayoutPanel1.RowStyles[2].Height = Math.Min((currentHeightOfTableLayoutPanel1Row2 + (float)uiOverhead), maxHeightTableLayoutPanel1Row2);
 
-                // tabControl-Höhe anpassen
                 int heightForTabControl = tabControl1.Height + uiOverhead;
                 tabControl1.Height = heightForTabControl;
 
-                // Fenster zentrieren
                 int newX = (workingArea.Width - this.Width) / 2;
                 int newY = (workingArea.Height - this.Height) / 2;
                 this.Location = new Point(newX, newY);
@@ -437,11 +377,9 @@ namespace Grafikeditor14
             newLabel.Click += NeuesLabel_Click;
 
             panel2.Controls.Add(newLabel);
-            //SetActive(newLabel);
             ClearSelection();
             AddToSelection(newLabel);
 
-            DisplayFieldProperties(newLabel);
             highlightBorder.SendToBack();
         }
 
@@ -450,7 +388,6 @@ namespace Grafikeditor14
         {
             Control ctrl = s as Control;
 
-            // Duplizieren bleibt unverändert …
             if (e.Button == MouseButtons.Left && Control.ModifierKeys.HasFlag(Keys.Control))
             {
                 DupliziereFeld(ctrl);
@@ -461,14 +398,14 @@ namespace Grafikeditor14
             {
                 _mouseDownLocationL = e.Location;
 
-                bool multi = (ModifierKeys & Keys.Control) == Keys.Shift;
+                bool multi = (ModifierKeys & Keys.Shift) == Keys.Shift;
 
-                if (!multi)                // Einzel­auswahl
+                if (!multi)
                 {
                     ClearSelection();
                     AddToSelection(ctrl);
                 }
-                else                       // CTRL gedrückt → toggeln
+                else
                 {
                     if (_selection.Contains(ctrl))
                         RemoveFromSelection(ctrl);
@@ -483,6 +420,8 @@ namespace Grafikeditor14
         private void FeldInPanel_MouseMove(object sender, MouseEventArgs e)
         {
             if (_selection.Count == 0) return;
+
+            _state.ActiveControl = _selection[0];
 
             if (e.Button != MouseButtons.Left || _selection[0] == null)
                 return;
@@ -527,14 +466,7 @@ namespace Grafikeditor14
 
             bool isSimpleClick = dx < SystemInformation.DoubleClickSize.Width / 2 &&
                                  dy < SystemInformation.DoubleClickSize.Height / 2;
-
-            //if (clicked == _selection[0] && isSimpleClick)
-            //{
-            //    _selection[0] = null;
-            //    highlightBorder.Visible = false;
-            //    richTextBox7.Clear();
-            //    toolStripStatusLabel2.Text = "";
-            //}
+            _state.ActiveControl = _selection[0];
         }
 
         private Point SnapToGrid(Point position)
@@ -575,7 +507,6 @@ namespace Grafikeditor14
                 panel2.Controls.Add(panel);
                 panel2.Controls.Remove(_state.ActiveControl);
                 _state.ActiveControl.Dispose();
-                //SetActive(panel);
                 ClearSelection();
                 AddToSelection(panel);
             }
@@ -600,7 +531,6 @@ namespace Grafikeditor14
                 panel2.Controls.Add(label);
                 panel2.Controls.Remove(_state.ActiveControl);
                 _state.ActiveControl.Dispose();
-                //SetActive(label);
                 ClearSelection();
                 AddToSelection(label);
 
@@ -609,7 +539,6 @@ namespace Grafikeditor14
 
         private void NeuesLabel_Click(object sender, EventArgs e)
         {
-            //SetActive(sender as Control);
             ClearSelection();
             AddToSelection(sender as Control);
 
@@ -638,14 +567,8 @@ namespace Grafikeditor14
 
         private void panel2_MouseDown(object sender, MouseEventArgs e)
         {
-            if (_selection.Count == 0) return;
-
-            Control clicked = panel2.GetChildAtPoint(e.Location);
-            if (clicked == null)
-            {
-                _selection[0] = null;
-                highlightBorder.Visible = false;
-            }
+            if (panel2.GetChildAtPoint(e.Location) == null)
+                ClearSelection();
         }
 
         private string GeneriereNeuenFeldnamen()
@@ -719,21 +642,18 @@ namespace Grafikeditor14
             kopie.BringToFront();
             kopie.Focus();
 
-            //SetActive(kopie);
             ClearSelection();
             AddToSelection(kopie);
-
-            DisplayFieldProperties(_state.ActiveControl);
         }
 
         private ContentAlignment currentAlignment = ContentAlignment.MiddleCenter;
         private void radioButton_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton1.Checked)      // links
+            if (radioButton1.Checked)
                 currentAlignment = ContentAlignment.MiddleLeft;
-            else if (radioButton2.Checked) // zentriert
+            else if (radioButton2.Checked)
                 currentAlignment = ContentAlignment.MiddleCenter;
-            else if (radioButton3.Checked) // rechts
+            else if (radioButton3.Checked)
                 currentAlignment = ContentAlignment.MiddleRight;
 
             Label lbl = _state.ActiveControl as Label;
@@ -898,10 +818,7 @@ namespace Grafikeditor14
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (_selection.Count == 0) return false;
-
-            if (_state.ActiveControl == null)
-                return base.ProcessCmdKey(ref msg, keyData);
+            if (_selection.Count == 0) return base.ProcessCmdKey(ref msg, keyData);
 
             bool ctrl = (keyData & Keys.Control) == Keys.Control;
             Keys arrow = keyData & ~Keys.Control;
@@ -950,22 +867,14 @@ namespace Grafikeditor14
 
         private void SetActive(Control ctrl)
         {
-            _state.ActiveControl = ctrl;
-
-            if (ctrl == null) 
-            { 
-                highlightBorder.Visible = false; 
-                return; 
-            }
-            ctrl.Focus();
-            highlightBorder.Visible = true;
-
-            ZeigeHighlightUm(ctrl);
+            ClearSelection();
+            if (ctrl != null) AddToSelection(ctrl);
         }
 
         private void ClearSelection()
         {
             _selection.Clear();
+            _state.ActiveControl = null;
             highlightBorder.Visible = false;
             richTextBox7.Clear();
         }
@@ -974,11 +883,12 @@ namespace Grafikeditor14
         {
             if (!_selection.Contains(ctrl))
                 _selection.Add(ctrl);
+            _state.ActiveControl = ctrl;
             RefreshHighlight();
-            if (_selection.Count == 1)         // Einzel­auswahl
+            if (_selection.Count == 1)
                 DisplayFieldProperties(ctrl);
             else
-                richTextBox7.Clear();          // Mehrfach → leer
+                richTextBox7.Clear();
         }
 
         private void RemoveFromSelection(Control ctrl)
@@ -1006,7 +916,7 @@ namespace Grafikeditor14
 
             highlightBorder.Bounds = new Rectangle(r.Left - 2, r.Top - 2, r.Width + 4, r.Height + 4);
             highlightBorder.Visible = true;
-            highlightBorder.SendToBack();
+            highlightBorder.BringToFront();
         }
 
         private void tSB_Auswahlen_off_Click(object sender, EventArgs e)
