@@ -22,6 +22,8 @@ namespace Grafikeditor14
         private readonly UndoRedoManager _undoMgr = new UndoRedoManager();
         private readonly EditorState _state = new EditorState();
 
+        private readonly List<Control> _selection = new List<Control>();
+
         #region allgemeine Funktion
         // Fenster bewegen
         private bool isMouseDown = false;
@@ -241,7 +243,7 @@ namespace Grafikeditor14
             panel2.Height = Convert.ToInt32(toolStripTextBox2.Text);
         }
 
-        private readonly int minFormHeight = 1000; // oder: this.Height beim Start merken
+        private readonly int minFormHeight = 1000;
         private readonly int safetyMargin = 5;
         private void panel2_SizeChanged(object sender, EventArgs e)
         {
@@ -308,10 +310,9 @@ namespace Grafikeditor14
             toolStripStatusLabel2.Text = "this.Height = " + this.Height + " tabControl1.Height = " + tabControl1.Height.ToString();
 
             // ---------------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-----------------------------------hier wenn scrollbar sichtbar ... !!!!!!!!!!------------------------
-            // scrollPaddingPanel „hinter“ panel1 positionieren (für mehr Scrollfläche)
             scrollPaddingPanel.Location = new Point(
-                panel1.Right + 20,  // 20 px weiter rechts
-                panel1.Bottom + 20  // 20 px weiter unten
+                panel1.Right + 20,
+                panel1.Bottom + 20
             );
         }
 
@@ -397,10 +398,9 @@ namespace Grafikeditor14
             toolStripDropDownButton2.HideDropDown();
         }
 
-        // Neues Feld - Label erzeugen
-        Label newLabel = new Label();
         private void toolStripButton_NeuesFeldErzeugen_Click(object sender, EventArgs e)
         {
+            Label newLabel = new Label();
             string dsMerkmal = (comboBox1.SelectedItem != null)
                    ? comboBox1.SelectedItem.ToString()
                    : "";
@@ -409,7 +409,6 @@ namespace Grafikeditor14
                        ? "Neues Label"
                        : richTextBox1.Text;
 
-            newLabel = new Label();
             newLabel.BackColor = SystemColors.Control;
             newLabel.Font = new Font("Arial", 12f, FontStyle.Bold);
             newLabel.Text = labelText;
@@ -417,14 +416,12 @@ namespace Grafikeditor14
             newLabel.ForeColor = Color.Black;
             newLabel.AutoSize = false;
 
-            /* NEU: Breite auf Textlänge anpassen */
             Size txtSize = TextRenderer.MeasureText(labelText, newLabel.Font);
-            int padding = 20;                       // kleiner Puffer links/rechts
-            int minW = 110;                      // Mindestbreite wie bisher
+            int padding = 20;
+            int minW = 110;
             newLabel.Width = Math.Max(txtSize.Width + padding, minW);
-            newLabel.Height = 25;                    // Höhe bleibt unverändert
+            newLabel.Height = 25;
 
-            // Position zentrieren (jetzt mit variabler Breite)
             newLabel.Location = new Point(
                 panel2.Width / 2 - newLabel.Width / 2,
                 panel2.Height / 2 - newLabel.Height / 2);
@@ -432,134 +429,113 @@ namespace Grafikeditor14
             newLabel.BorderStyle = BorderStyle.FixedSingle;
             newLabel.Name = GeneriereNeuenFeldnamen();
 
-            // Name zuweisen
-            newLabel.Name = GeneriereNeuenFeldnamen();
-
-            newLabel.Tag = BuildTagArray(newLabel, dsMerkmal);   // Tag sofort setzen
-            DisplayFieldProperties(newLabel);                    // sofort in richTextBox7
+            newLabel.Tag = BuildTagArray(newLabel, dsMerkmal);
 
             newLabel.MouseDown += new MouseEventHandler(FeldInPanel_MouseDown);
             newLabel.MouseMove += new MouseEventHandler(FeldInPanel_MouseMove);
             newLabel.MouseUp += new MouseEventHandler(FeldInPanel_MouseUp);
-            //newLabel.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
             newLabel.Click += NeuesLabel_Click;
 
             panel2.Controls.Add(newLabel);
-            SetActive(newLabel);
-            //activeControl = newLabel;
-            newLabel.Focus();
-            activeControl.BringToFront();
+            //SetActive(newLabel);
+            ClearSelection();
+            AddToSelection(newLabel);
 
-            ZeigeHighlightUm(activeControl);
+            DisplayFieldProperties(newLabel);
             highlightBorder.SendToBack();
-
-            DisplayFieldProperties(activeControl);
         }
 
-        // Variablen für Drag & Drop
         private Point _mouseDownLocationL;
-
-        // Ereignishandler für das Drücken der Maustaste
-        private Control activeControl;
-        private void FeldInPanel_MouseDown(object sender, MouseEventArgs e)
+        private void FeldInPanel_MouseDown(object s, MouseEventArgs e)
         {
-            ///* Strg-Klick zum Duplizieren bleibt unverändert */
-            //if (e.Button == MouseButtons.Left && Control.ModifierKeys.HasFlag(Keys.Control))
-            //{
-            //    DupliziereFeld(sender as Control);
-            //    return;
-            //}
+            Control ctrl = s as Control;
 
-            //if (e.Button == MouseButtons.Left)
-            //{
-            //    _mouseDownLocationL = e.Location;      // Position für Bewegungsprüfung
-            //    activeControl = sender as Control;
-            //    activeControl.Focus();
-
-            //    ZeigeHighlightUm(activeControl);
-            //    highlightBorder.SendToBack();
-            //    toolStripStatusLabel2.Text = activeControl.Name;
-
-            //    DisplayFieldProperties(activeControl); // Eigenschaften anzeigen
-            //}
-
-            SetActive(sender as Control);
+            // Duplizieren bleibt unverändert …
+            if (e.Button == MouseButtons.Left && Control.ModifierKeys.HasFlag(Keys.Control))
+            {
+                DupliziereFeld(ctrl);
+                return;
+            }
 
             if (e.Button == MouseButtons.Left)
             {
-                _state.ActiveControl = sender as Control;  // ← Setzen
-                ZeigeHighlightUm(_state.ActiveControl);
+                _mouseDownLocationL = e.Location;
+
+                bool multi = (ModifierKeys & Keys.Control) == Keys.Shift;
+
+                if (!multi)                // Einzel­auswahl
+                {
+                    ClearSelection();
+                    AddToSelection(ctrl);
+                }
+                else                       // CTRL gedrückt → toggeln
+                {
+                    if (_selection.Contains(ctrl))
+                        RemoveFromSelection(ctrl);
+                    else
+                        AddToSelection(ctrl);
+                }
+
+                toolStripStatusLabel2.Text = ctrl.Name;
             }
         }
 
-        // Ereignishandler für das Bewegen der Maus
         private void FeldInPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            _state.ActiveControl = sender as Control;
+            if (_selection.Count == 0) return;
 
-            if (e.Button != MouseButtons.Left || activeControl == null)
+            if (e.Button != MouseButtons.Left || _selection[0] == null)
                 return;
 
-            activeControl.Left = e.X + activeControl.Left - _mouseDownLocationL.X;
-            activeControl.Top = e.Y + activeControl.Top - _mouseDownLocationL.Y;
+            _selection[0].Left = e.X + _selection[0].Left - _mouseDownLocationL.X;
+            _selection[0].Top = e.Y + _selection[0].Top - _mouseDownLocationL.Y;
 
-            // Rote Umrandung synchronisieren, wenn sichtbar
-            if (highlightBorder.Visible && activeControl != null)
+            if (highlightBorder.Visible)
             {
                 highlightBorder.Bounds = new Rectangle(
-                    activeControl.Left - 2,
-                    activeControl.Top - 2,
-                    activeControl.Width + 4,
-                    activeControl.Height + 4
+                    _selection[0].Left - 2,
+                    _selection[0].Top - 2,
+                    _selection[0].Width + 4,
+                    _selection[0].Height + 4
                 );
             }
         }
 
         private void FeldInPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left || activeControl == null)
+            if (_selection.Count == 0) return;
+
+            if (e.Button != MouseButtons.Left || _selection[0] == null)
                 return;
 
-            /* 1) Raster-Snapping wie bisher */
-            //Point snapped = SnapToGrid(activeControl.Location);
-            Point snapped = SnapToGrid(activeControl.Location);
-            var cmd = new MoveCommand(activeControl, snapped);
+            Point snapped = SnapToGrid(_selection[0].Location);
+            var cmd = new MoveCommand(_selection[0], snapped);
             _undoMgr.Do(cmd);
-            activeControl.Location = snapped;
+            _selection[0].Location = snapped;
 
             highlightBorder.Bounds = new Rectangle(
-                activeControl.Left - 2,
-                activeControl.Top - 2,
-                activeControl.Width + 4,
-                activeControl.Height + 4);
+                _selection[0].Left - 2,
+                _selection[0].Top - 2,
+                _selection[0].Width + 4,
+                _selection[0].Height + 4);
             highlightBorder.SendToBack();
 
-            /* 2) NEU: Abwählen bei einfachem Klick (MouseUp) auf bereits markiertes Feld */
             Control clicked = sender as Control;
-
-            // Bewegungstoleranz (< Hälfte der DoubleClickSize)
+            
             int dx = Math.Abs(e.Location.X - _mouseDownLocationL.X);
             int dy = Math.Abs(e.Location.Y - _mouseDownLocationL.Y);
+
             bool isSimpleClick = dx < SystemInformation.DoubleClickSize.Width / 2 &&
                                  dy < SystemInformation.DoubleClickSize.Height / 2;
 
-            if (clicked == activeControl && isSimpleClick)
-            {
-                activeControl = null;            // Auswahl aufheben
-                highlightBorder.Visible = false; // roten Rahmen verbergen
-                richTextBox7.Clear();            // Eigenschaftenanzeige leeren
-                toolStripStatusLabel2.Text = ""; // Status zurücksetzen
-            }
+            //if (clicked == _selection[0] && isSimpleClick)
+            //{
+            //    _selection[0] = null;
+            //    highlightBorder.Visible = false;
+            //    richTextBox7.Clear();
+            //    toolStripStatusLabel2.Text = "";
+            //}
         }
-
-        //private void FeldInPanel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        //{
-        //    if (e.Control && !isCtrlPressed)
-        //    {
-        //        isCtrlPressed = true;
-        //        //StartResizeTimer();
-        //    }
-        //}
 
         private Point SnapToGrid(Point position)
         {
@@ -567,6 +543,7 @@ namespace Grafikeditor14
             {
                 int x = (position.X + rasterAbstand / 2) / rasterAbstand * rasterAbstand;
                 int y = (position.Y + rasterAbstand / 2) / rasterAbstand * rasterAbstand;
+
                 return new Point(x, y);
             }
             else
@@ -575,160 +552,68 @@ namespace Grafikeditor14
             }
         }
 
-        //private bool isCtrlPressed = false;
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ControlKey)
-            {
-                //isCtrlPressed = true;
-                if (activeControl != null)
-                {
-                    //StartResizeTimer();
-                }
-            }
-        }
-
-        //private void Form1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        //{
-        //    if (e.Control && !isCtrlPressed)
-        //    {
-        //        isCtrlPressed = true;
-        //        //StartResizeTimer();
-        //    }
-        //}
-
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ControlKey)
-            {
-                //isCtrlPressed = false;
-                //StopResizeTimer();
-            }
-        }
-
-        //private System.Windows.Forms.Timer resizeTimer;
-        //private void StartResizeTimer()
-        //{
-        //    if (resizeTimer == null)
-        //    {
-        //        resizeTimer = new System.Windows.Forms.Timer();
-        //        resizeTimer.Interval = 100; // 100 ms
-        //        resizeTimer.Tick += (s, e) => ResizeActiveControl();
-        //        resizeTimer.Start();
-        //    }
-        //}
-
-        //private void StopResizeTimer()
-        //{
-        //    if (resizeTimer != null)
-        //    {
-        //        resizeTimer.Stop();
-        //        resizeTimer.Dispose();
-        //        resizeTimer = null;
-        //    }
-        //}
-
-        private void ResizeActiveControl()
-        {
-            if (activeControl == null) return;
-
-            // 1) Feldgröße anpassen
-            if (Keyboard.IsKeyDown(Keys.Up))
-                activeControl.Height = Math.Max(5, activeControl.Height - 1);
-            else if (Keyboard.IsKeyDown(Keys.Down))
-                activeControl.Height += 1;
-
-            if (Keyboard.IsKeyDown(Keys.Left))
-                activeControl.Width = Math.Max(5, activeControl.Width - 1);
-            else if (Keyboard.IsKeyDown(Keys.Right))
-                activeControl.Width += 1;
-
-            /* 2) 🆕 Roten Auswahlrahmen synchronisieren */
-            if (highlightBorder.Visible)
-            {
-                highlightBorder.Bounds = new Rectangle(
-                    activeControl.Left - 2,
-                    activeControl.Top - 2,
-                    activeControl.Width + 4,
-                    activeControl.Height + 4);
-                highlightBorder.SendToBack(); // bleibt hinter dem Feld
-            }
-
-        }
-
         private void toolStripButton_ToggleLabelPanel_Click(object sender, EventArgs e)
         {
-            if (activeControl == null)
+            if (_state.ActiveControl == null)
                 return;
 
-            // Label → Panel (ohne Text)
-            if (activeControl is Label && activeControl.Parent == panel2)
+            if (_state.ActiveControl is Label && _state.ActiveControl.Parent == panel2)
             {
                 Panel panel = new Panel
                 {
-                    Location = activeControl.Location,
-                    Size = activeControl.Size,
+                    Location = _state.ActiveControl.Location,
+                    Size = _state.ActiveControl.Size,
                     BorderStyle = BorderStyle.FixedSingle,
                     BackColor = Color.LightGray,
-                    Name = activeControl.Name // 👈 Name übernehmen
+                    Name = _state.ActiveControl.Name
                 };
 
                 panel.MouseDown += new MouseEventHandler(FeldInPanel_MouseDown);
                 panel.MouseMove += new MouseEventHandler(FeldInPanel_MouseMove);
                 panel.MouseUp += new MouseEventHandler(FeldInPanel_MouseUp);
-                //panel.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
 
                 panel2.Controls.Add(panel);
-                panel2.Controls.Remove(activeControl);
-                activeControl.Dispose();
-
-                SetActive(panel);
-                activeControl = panel;
-                activeControl.BringToFront();
-
-                ZeigeHighlightUm(activeControl);
-                highlightBorder.SendToBack();
+                panel2.Controls.Remove(_state.ActiveControl);
+                _state.ActiveControl.Dispose();
+                //SetActive(panel);
+                ClearSelection();
+                AddToSelection(panel);
             }
-            // Panel → Label (leer)
-            else if (activeControl is Panel && activeControl.Parent == panel2)
+            
+            else if (_state.ActiveControl is Panel && _state.ActiveControl.Parent == panel2)
             {
                 Label label = new Label
                 {
-                    Location = activeControl.Location,
-                    Size = activeControl.Size,
+                    Location = _state.ActiveControl.Location,
+                    Size = _state.ActiveControl.Size,
                     BorderStyle = BorderStyle.FixedSingle,
                     BackColor = SystemColors.Control,
                     AutoSize = false,
-                    Name = activeControl.Name, // Name übernehmen
+                    Name = _state.ActiveControl.Name,
                     TextAlign = currentAlignment
                 };
 
                 label.MouseDown += new MouseEventHandler(FeldInPanel_MouseDown);
                 label.MouseMove += new MouseEventHandler(FeldInPanel_MouseMove);
                 label.MouseUp += new MouseEventHandler(FeldInPanel_MouseUp);
-                //label.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
 
                 panel2.Controls.Add(label);
-                panel2.Controls.Remove(activeControl);
-                activeControl.Dispose();
+                panel2.Controls.Remove(_state.ActiveControl);
+                _state.ActiveControl.Dispose();
+                //SetActive(label);
+                ClearSelection();
+                AddToSelection(label);
 
-                SetActive(label);
-                activeControl = label;
-                activeControl.BringToFront();
-
-                ZeigeHighlightUm(activeControl);
-                highlightBorder.SendToBack();
             }
         }
 
         private void NeuesLabel_Click(object sender, EventArgs e)
         {
-            activeControl = sender as Control;
-            activeControl.Focus(); // Optional, wenn Tasteneingaben érforderlich
+            //SetActive(sender as Control);
+            ClearSelection();
+            AddToSelection(sender as Control);
 
-            activeControl = sender as Control;
-            activeControl.Focus();
-            DisplayFieldProperties(activeControl);
+            DisplayFieldProperties(_state.ActiveControl);
         }
 
         private Panel highlightBorder;
@@ -748,16 +633,17 @@ namespace Grafikeditor14
             );
             highlightBorder.Visible = true;
             highlightBorder.BringToFront();
-            ctrl.BringToFront(); // Das Feld bleibt über dem Rahmen sichtbar
+            ctrl.BringToFront();
         }
 
         private void panel2_MouseDown(object sender, MouseEventArgs e)
         {
-            // Klick auf leeren Bereich
+            if (_selection.Count == 0) return;
+
             Control clicked = panel2.GetChildAtPoint(e.Location);
             if (clicked == null)
             {
-                activeControl = null;
+                _selection[0] = null;
                 highlightBorder.Visible = false;
             }
         }
@@ -771,7 +657,7 @@ namespace Grafikeditor14
                 if (ctrl.Name.StartsWith("Feld"))
                 {
                     string nummerTeil = ctrl.Name.Substring(4);
-                    int nummer; // Deklaration separat
+                    int nummer;
                     if (int.TryParse(nummerTeil, out nummer))
                     {
                         if (nummer > maxNummer)
@@ -821,31 +707,26 @@ namespace Grafikeditor14
                 return;
             }
 
-            kopie.Name = GeneriereNeuenFeldnamen(); // eindeutiger Name
+            kopie.Name = GeneriereNeuenFeldnamen();
             kopie.Location = new Point(original.Left + 10, original.Top + 10);
 
-            // Events zuweisen
             kopie.MouseDown += new MouseEventHandler(FeldInPanel_MouseDown);
             kopie.MouseMove += new MouseEventHandler(FeldInPanel_MouseMove);
             kopie.MouseUp += new MouseEventHandler(FeldInPanel_MouseUp);
-            //kopie.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
             kopie.Click += NeuesLabel_Click;
 
             panel2.Controls.Add(kopie);
             kopie.BringToFront();
             kopie.Focus();
 
-            // Auswahlrahmen anzeigen
-            SetActive(kopie);
-            //activeControl = kopie;
-            ZeigeHighlightUm(kopie);
-            highlightBorder.SendToBack();
+            //SetActive(kopie);
+            ClearSelection();
+            AddToSelection(kopie);
 
-            DisplayFieldProperties(activeControl);
+            DisplayFieldProperties(_state.ActiveControl);
         }
 
-        private ContentAlignment currentAlignment = ContentAlignment.MiddleCenter;  // Standard = zentriert
-        // Form1.cs  –  Event-Handler für alle drei RadioButtons ◄◄
+        private ContentAlignment currentAlignment = ContentAlignment.MiddleCenter;
         private void radioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton1.Checked)      // links
@@ -855,20 +736,18 @@ namespace Grafikeditor14
             else if (radioButton3.Checked) // rechts
                 currentAlignment = ContentAlignment.MiddleRight;
 
-            Label lbl = activeControl as Label;
+            Label lbl = _state.ActiveControl as Label;
             if (lbl != null)
                 lbl.TextAlign = currentAlignment;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (activeControl == null || comboBox1.SelectedItem == null)
+            if (_state.ActiveControl == null || comboBox1.SelectedItem == null)
                 return;
 
-            // Gewähltes Auftragsmerkmal
             string auftragsMerkmal = comboBox1.SelectedItem.ToString();
 
-            /* 1) Eindeutigkeit sicherstellen ---------------------------------------------------- */
             foreach (Control ctrl in panel2.Controls)
             {
                 string[] tagArray = ctrl.Tag as string[];
@@ -884,52 +763,47 @@ namespace Grafikeditor14
                 }
             }
 
-            /* 2) Werte des aktiven Feldes einsammeln ------------------------------------------- */
-            // Alignment ermitteln
-            int alignVal = 32;                                   // Default zentriert
-            Label lbl = activeControl as Label;
+            int alignVal = 32;
+            Label lbl = _state.ActiveControl as Label;
             if (lbl != null)
             {
                 if (lbl.TextAlign == ContentAlignment.MiddleLeft) alignVal = 16;
                 else if (lbl.TextAlign == ContentAlignment.MiddleRight) alignVal = 48;
             }
 
-            // Textfarbe (falls Label), Fontinfos usw.
             int textColor = (lbl != null) ? lbl.ForeColor.ToArgb() : 0;
             float fontSize = (lbl != null) ? lbl.Font.Size : 0f;
             string fontName = (lbl != null) ? lbl.Font.Name : "";
             int fontStyle = (lbl != null) ? (int)lbl.Font.Style : 0;
             string textVal = (lbl != null) ? lbl.Text : "";
 
-            /* 3) String-Array mit 15 Feldern aufbauen ----------------------------------------- */
             string[] tagData = new string[15];
             tagData[0] = "Alignment=" + alignVal;
-            tagData[1] = "PosY=" + activeControl.Top;
+            tagData[1] = "PosY=" + _state.ActiveControl.Top;
             tagData[2] = "Fontgröße=" + fontSize;
             tagData[3] = "Text=" + textVal;
             tagData[4] = "Füllzeichen=";                       // (kommt später)
-            tagData[5] = "Höhe=" + activeControl.Height;
+            tagData[5] = "Höhe=" + _state.ActiveControl.Height;
             tagData[6] = "Textfarbe=" + textColor;
             tagData[7] = "Stellen=0";
-            tagData[8] = "PosX=" + activeControl.Left;
-            tagData[9] = "FeldName=" + activeControl.Name;
+            tagData[8] = "PosX=" + _state.ActiveControl.Left;
+            tagData[9] = "FeldName=" + _state.ActiveControl.Name;
             tagData[10] = "FontName=" + fontName;
-            tagData[11] = "Breite=" + activeControl.Width;
+            tagData[11] = "Breite=" + _state.ActiveControl.Width;
             tagData[12] = "Fontstyle=" + fontStyle;
-            tagData[13] = "Farbe=" + activeControl.BackColor.ToArgb();
+            tagData[13] = "Farbe=" + _state.ActiveControl.BackColor.ToArgb();
             tagData[14] = "DSFeldname=" + auftragsMerkmal;
 
-            /* 4) Tag schreiben ---------------------------------------------------------------- */
-            activeControl.Tag = BuildTagArray(activeControl, auftragsMerkmal);
+            _state.ActiveControl.Tag = BuildTagArray(_state.ActiveControl, auftragsMerkmal);
 
             MessageBox.Show(
                 "Auftragsmerkmal \"" + auftragsMerkmal +
-                "\" wurde Feld \"" + activeControl.Name + "\" zugeordnet.",
+                "\" wurde Feld \"" + _state.ActiveControl.Name + "\" zugeordnet.",
                 "Erfolgreich",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
-            DisplayFieldProperties(activeControl);
+            DisplayFieldProperties(_state.ActiveControl);
         }
 
         private void DisplayFieldProperties(Control ctrl)
@@ -937,19 +811,16 @@ namespace Grafikeditor14
             if (ctrl == null || richTextBox7 == null)
                 return;
 
-            /* Tag-Daten vorhanden? */
             string[] tagArr = ctrl.Tag as string[];
             if (tagArr != null && tagArr.Length == 15)
             {
-                richTextBox7.Lines = tagArr;              // jede Eigenschaft in eine Zeile
+                richTextBox7.Lines = tagArr;
                 return;
             }
 
-            /* Fallback: Werte zur Laufzeit ermitteln ----------------------- */
             List<string> lines = new List<string>();
 
-            // Alignment
-            int alignVal = 32;                                // zentriert
+            int alignVal = 32;
             Label lbl = ctrl as Label;
             if (lbl != null)
             {
@@ -961,7 +832,7 @@ namespace Grafikeditor14
             lines.Add("PosY=" + ctrl.Top);
             lines.Add("Fontgröße=" + ((lbl != null) ? lbl.Font.Size : 0));
             lines.Add("Text=" + ((lbl != null) ? lbl.Text : ""));
-            lines.Add("Füllzeichen=");                               // Platzhalter
+            lines.Add("Füllzeichen=");
             lines.Add("Höhe=" + ctrl.Height);
             lines.Add("Textfarbe=" + ((lbl != null) ? lbl.ForeColor.ToArgb() : 0));
             lines.Add("Stellen=0");
@@ -971,14 +842,13 @@ namespace Grafikeditor14
             lines.Add("Breite=" + ctrl.Width);
             lines.Add("Fontstyle=" + ((lbl != null) ? (int)lbl.Font.Style : 0));
             lines.Add("Farbe=" + ctrl.BackColor.ToArgb());
-            lines.Add("DSFeldname=");                                // Platzhalter
+            lines.Add("DSFeldname=");
 
             richTextBox7.Lines = lines.ToArray();
         }
 
         private string[] BuildTagArray(Control ctrl, string auftragsMerkmal)
         {
-            // Alignment ermitteln
             int alignVal = 32;
             Label lbl = ctrl as Label;
             if (lbl != null)
@@ -987,7 +857,6 @@ namespace Grafikeditor14
                 else if (lbl.TextAlign == ContentAlignment.MiddleRight) alignVal = 48;
             }
 
-            // Text- & Font-Infos (nur Label)
             int textColor = (lbl != null) ? lbl.ForeColor.ToArgb() : 0;
             float fontSize = (lbl != null) ? lbl.Font.Size : 0f;
             string fontName = (lbl != null) ? lbl.Font.Name : "";
@@ -1018,34 +887,18 @@ namespace Grafikeditor14
         {
             Control clicked = sender as Control;
 
-            // Nur abwählen, wenn das Feld bereits ausgewählt ist
-            if (clicked != null && clicked == activeControl)
+            if (clicked != null && clicked == _state.ActiveControl)
             {
-                activeControl = null;            // Auswahl aufheben
-                highlightBorder.Visible = false; // roten Rahmen ausblenden
-                richTextBox7.Clear();            // Eigenschaftenanzeige leeren
-                toolStripStatusLabel2.Text = ""; // Status zurücksetzen
+                _state.ActiveControl = null;
+                highlightBorder.Visible = false;
+                richTextBox7.Clear();
+                toolStripStatusLabel2.Text = "";
             }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            //if (_state.ActiveControl == null)            // kein Feld ausgewählt
-            //    return base.ProcessCmdKey(ref msg, keyData);
-
-            //bool ctrl = (keyData & Keys.Control) == Keys.Control;
-            //Keys arrows = keyData & ~Keys.Control;       // Modifier herausfiltern
-
-            //switch (arrows)
-            //{
-            //    case Keys.Left: HandleArrow(ctrl, -1, 0); return true;
-            //    case Keys.Right: HandleArrow(ctrl, 1, 0); return true;
-            //    case Keys.Up: HandleArrow(ctrl, 0, -1); return true;
-            //    case Keys.Down: HandleArrow(ctrl, 0, 1); return true;
-            //}
-            //return base.ProcessCmdKey(ref msg, keyData);
-
-            //System.Diagnostics.Debug.WriteLine("KeyData=" + keyData);
+            if (_selection.Count == 0) return false;
 
             if (_state.ActiveControl == null)
                 return base.ProcessCmdKey(ref msg, keyData);
@@ -1054,44 +907,18 @@ namespace Grafikeditor14
             Keys arrow = keyData & ~Keys.Control;
 
             int dx = 0, dy = 0;
-            switch (arrow)
-            {
-                case Keys.Left: dx = -1; break;
-                case Keys.Right: dx = 1; break;
-                case Keys.Up: dy = -1; break;
-                case Keys.Down: dy = 1; break;
-                default: return base.ProcessCmdKey(ref msg, keyData);
-            }
+            if (arrow == Keys.Left) dx = -1;
+            if (arrow == Keys.Right) dx = 1;
+            if (arrow == Keys.Up) dy = -1;
+            if (arrow == Keys.Down) dy = 1;
+            if (dx == 0 && dy == 0) return base.ProcessCmdKey(ref msg, keyData);
 
-            if (ctrl)
-                VerarbeiteResize(dx, dy);
-            else
-                VerarbeiteMove(dx, dy);
+            if (ctrl) VerarbeiteResize(dx, dy);
+            else VerarbeiteMove(dx, dy);
 
-            return true;  // Taste verarbeitet
+            ZeigeHighlightUm(_state.ActiveControl);
+            return true;
         }
-
-        //protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        //{
-        //    if (_state.ActiveControl == null) return base.ProcessCmdKey(ref msg, keyData);
-
-        //    bool ctrl = (keyData & Keys.Control) == Keys.Control;
-        //    Keys arrow = keyData & ~Keys.Control;
-
-        //    int dx = 0, dy = 0;
-        //    if (arrow == Keys.Left) dx = -1;
-        //    if (arrow == Keys.Right) dx = 1;
-        //    if (arrow == Keys.Up) dy = -1;
-        //    if (arrow == Keys.Down) dy = 1;
-        //    if (dx == 0 && dy == 0) return base.ProcessCmdKey(ref msg, keyData);
-
-        //    if (ctrl)
-        //        VerarbeiteResize(dx, dy);
-        //    else
-        //        VerarbeiteMove(dx, dy);
-
-        //    return true;                      // Taste verarbeitet
-        //}
 
         private void VerarbeiteResize(int dxSign, int dySign)
         {
@@ -1102,9 +929,7 @@ namespace Grafikeditor14
                 Math.Max(5, c.Width + dxSign * step),
                 Math.Max(5, c.Height + dySign * step));
 
-            IEditorCommand cmd = new ResizeCommand(c, ziel);
-            _undoMgr.Do(cmd);
-
+            _undoMgr.Do(new ResizeCommand(c, ziel));
             ZeigeHighlightUm(c);
         }
 
@@ -1113,57 +938,80 @@ namespace Grafikeditor14
             Control c = _state.ActiveControl;
             int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
 
-            Point ziel = new Point(
-                c.Left + dxSign * step,
-                c.Top + dySign * step);
+            Point ziel = new Point(c.Left + dxSign * step,
+                                   c.Top + dySign * step);
 
             if (_state.RasterAktiv)
                 ziel = SnapToGrid(ziel);
 
-            IEditorCommand cmd = new MoveCommand(c, ziel);
-            _undoMgr.Do(cmd);
-
+            _undoMgr.Do(new MoveCommand(c, ziel));
             ZeigeHighlightUm(c);
-        }
-
-        private void HandleArrow(bool ctrl, int dxSign, int dySign)
-        {
-            Control c = _state.ActiveControl;
-
-            // Verschieben
-            if (!ctrl)
-            {
-                int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
-                Point newPos = new Point(c.Left + dxSign * step,
-                                         c.Top + dySign * step);
-
-                // Raster-Snap erzwingen, wenn aktiv
-                if (_state.RasterAktiv)
-                    newPos = SnapToGrid(newPos);
-
-                var cmd = new MoveCommand(c, newPos);
-                _undoMgr.Do(cmd);
-            }
-            // Skalieren
-            else
-            {
-                int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
-                Size newSize = new Size(
-                    Math.Max(5, c.Width + dxSign * step),   // Links/Rechts → Breite
-                    Math.Max(5, c.Height + dySign * step));  // Oben/Unten  → Höhe
-
-                var cmd = new ResizeCommand(c, newSize);
-                _undoMgr.Do(cmd);
-            }
-
-            ZeigeHighlightUm(c);          // roten Rahmen anpassen
         }
 
         private void SetActive(Control ctrl)
         {
-            _state.ActiveControl = ctrl;   // zentrale Variable
-            if (ctrl != null) ctrl.Focus();
+            _state.ActiveControl = ctrl;
+
+            if (ctrl == null) 
+            { 
+                highlightBorder.Visible = false; 
+                return; 
+            }
+            ctrl.Focus();
+            highlightBorder.Visible = true;
+
             ZeigeHighlightUm(ctrl);
+        }
+
+        private void ClearSelection()
+        {
+            _selection.Clear();
+            highlightBorder.Visible = false;
+            richTextBox7.Clear();
+        }
+
+        private void AddToSelection(Control ctrl)
+        {
+            if (!_selection.Contains(ctrl))
+                _selection.Add(ctrl);
+            RefreshHighlight();
+            if (_selection.Count == 1)         // Einzel­auswahl
+                DisplayFieldProperties(ctrl);
+            else
+                richTextBox7.Clear();          // Mehrfach → leer
+        }
+
+        private void RemoveFromSelection(Control ctrl)
+        {
+            _selection.Remove(ctrl);
+            if (_selection.Count == 0)
+                ClearSelection();
+            else
+            {
+                RefreshHighlight();
+                if (_selection.Count == 1)
+                    DisplayFieldProperties(_selection[0]);
+                else
+                    richTextBox7.Clear();
+            }
+        }
+
+        private void RefreshHighlight()
+        {
+            if (_selection.Count == 0) { highlightBorder.Visible = false; return; }
+
+            Rectangle r = _selection[0].Bounds;
+            foreach (Control c in _selection.Skip(1))
+                r = Rectangle.Union(r, c.Bounds);
+
+            highlightBorder.Bounds = new Rectangle(r.Left - 2, r.Top - 2, r.Width + 4, r.Height + 4);
+            highlightBorder.Visible = true;
+            highlightBorder.SendToBack();
+        }
+
+        private void tSB_Auswahlen_off_Click(object sender, EventArgs e)
+        {
+            ClearSelection();
         }
     }
 }

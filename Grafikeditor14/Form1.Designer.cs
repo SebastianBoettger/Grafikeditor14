@@ -106,6 +106,7 @@
             this.panel12 = new System.Windows.Forms.Panel();
             this.skinControl4 = new technicontrol.Visualization.SkinControl();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.tSB_Auswahlen_off = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -320,6 +321,7 @@
             this.toolStripSeparator4,
             this.toolStripDropDownButton2,
             this.toolStripSeparator1,
+            this.tSB_Auswahlen_off,
             this.toolStripButton_NeuesFeldErzeugen,
             this.toolStripSeparator3,
             this.toolStripButton_ToggleLabelPanel,
@@ -1038,6 +1040,16 @@
             this.richTextBox2.TabIndex = 5;
             this.richTextBox2.Text = "Arial, 12, Bold";
             // 
+            // tSB_Auswahlen_off
+            // 
+            this.tSB_Auswahlen_off.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tSB_Auswahlen_off.Image = ((System.Drawing.Image)(resources.GetObject("tSB_Auswahlen_off.Image")));
+            this.tSB_Auswahlen_off.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tSB_Auswahlen_off.Name = "tSB_Auswahlen_off";
+            this.tSB_Auswahlen_off.Size = new System.Drawing.Size(87, 22);
+            this.tSB_Auswahlen_off.Text = "Auswahlen off";
+            this.tSB_Auswahlen_off.Click += new System.EventHandler(this.tSB_Auswahlen_off_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -1054,8 +1066,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -1168,6 +1178,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.RichTextBox richTextBox7;
+        private System.Windows.Forms.ToolStripButton tSB_Auswahlen_off;
     }
 }
 
