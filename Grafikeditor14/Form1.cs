@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+using Grafikeditor14.Core;
 
 namespace Grafikeditor14
 {
@@ -16,6 +17,9 @@ namespace Grafikeditor14
         {
             InitializeComponent();
         }
+
+        private readonly UndoRedoManager _undoMgr = new UndoRedoManager();
+        private readonly EditorState _state = new EditorState();
 
         #region allgemeine Funktion
         // Fenster bewegen
@@ -436,7 +440,7 @@ namespace Grafikeditor14
             newLabel.MouseDown += new MouseEventHandler(FeldInPanel_MouseDown);
             newLabel.MouseMove += new MouseEventHandler(FeldInPanel_MouseMove);
             newLabel.MouseUp += new MouseEventHandler(FeldInPanel_MouseUp);
-            newLabel.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
+            //newLabel.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
             newLabel.Click += NeuesLabel_Click;
 
             panel2.Controls.Add(newLabel);
@@ -457,24 +461,30 @@ namespace Grafikeditor14
         private Control activeControl;
         private void FeldInPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            /* Strg-Klick zum Duplizieren bleibt unverändert */
-            if (e.Button == MouseButtons.Left && Control.ModifierKeys.HasFlag(Keys.Control))
-            {
-                DupliziereFeld(sender as Control);
-                return;
-            }
+            ///* Strg-Klick zum Duplizieren bleibt unverändert */
+            //if (e.Button == MouseButtons.Left && Control.ModifierKeys.HasFlag(Keys.Control))
+            //{
+            //    DupliziereFeld(sender as Control);
+            //    return;
+            //}
+
+            //if (e.Button == MouseButtons.Left)
+            //{
+            //    _mouseDownLocationL = e.Location;      // Position für Bewegungsprüfung
+            //    activeControl = sender as Control;
+            //    activeControl.Focus();
+
+            //    ZeigeHighlightUm(activeControl);
+            //    highlightBorder.SendToBack();
+            //    toolStripStatusLabel2.Text = activeControl.Name;
+
+            //    DisplayFieldProperties(activeControl); // Eigenschaften anzeigen
+            //}
 
             if (e.Button == MouseButtons.Left)
             {
-                _mouseDownLocationL = e.Location;      // Position für Bewegungsprüfung
-                activeControl = sender as Control;
-                activeControl.Focus();
-
-                ZeigeHighlightUm(activeControl);
-                highlightBorder.SendToBack();
-                toolStripStatusLabel2.Text = activeControl.Name;
-
-                DisplayFieldProperties(activeControl); // Eigenschaften anzeigen
+                _state.ActiveControl = sender as Control;  // ← Setzen
+                ZeigeHighlightUm(_state.ActiveControl);
             }
         }
 
@@ -505,7 +515,10 @@ namespace Grafikeditor14
                 return;
 
             /* 1) Raster-Snapping wie bisher */
+            //Point snapped = SnapToGrid(activeControl.Location);
             Point snapped = SnapToGrid(activeControl.Location);
+            var cmd = new MoveCommand(activeControl, snapped);
+            _undoMgr.Do(cmd);
             activeControl.Location = snapped;
 
             highlightBorder.Bounds = new Rectangle(
@@ -533,14 +546,14 @@ namespace Grafikeditor14
             }
         }
 
-        private void FeldInPanel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            if (e.Control && !isCtrlPressed)
-            {
-                isCtrlPressed = true;
-                StartResizeTimer();
-            }
-        }
+        //private void FeldInPanel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        //{
+        //    if (e.Control && !isCtrlPressed)
+        //    {
+        //        isCtrlPressed = true;
+        //        //StartResizeTimer();
+        //    }
+        //}
 
         private Point SnapToGrid(Point position)
         {
@@ -556,58 +569,58 @@ namespace Grafikeditor14
             }
         }
 
-        private bool isCtrlPressed = false;
+        //private bool isCtrlPressed = false;
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.ControlKey)
             {
-                isCtrlPressed = true;
+                //isCtrlPressed = true;
                 if (activeControl != null)
                 {
-                    StartResizeTimer();
+                    //StartResizeTimer();
                 }
             }
         }
 
-        private void Form1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            if (e.Control && !isCtrlPressed)
-            {
-                isCtrlPressed = true;
-                StartResizeTimer();
-            }
-        }
+        //private void Form1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        //{
+        //    if (e.Control && !isCtrlPressed)
+        //    {
+        //        isCtrlPressed = true;
+        //        //StartResizeTimer();
+        //    }
+        //}
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.ControlKey)
             {
-                isCtrlPressed = false;
-                StopResizeTimer();
+                //isCtrlPressed = false;
+                //StopResizeTimer();
             }
         }
 
-        private System.Windows.Forms.Timer resizeTimer;
-        private void StartResizeTimer()
-        {
-            if (resizeTimer == null)
-            {
-                resizeTimer = new System.Windows.Forms.Timer();
-                resizeTimer.Interval = 100; // 100 ms
-                resizeTimer.Tick += (s, e) => ResizeActiveControl();
-                resizeTimer.Start();
-            }
-        }
+        //private System.Windows.Forms.Timer resizeTimer;
+        //private void StartResizeTimer()
+        //{
+        //    if (resizeTimer == null)
+        //    {
+        //        resizeTimer = new System.Windows.Forms.Timer();
+        //        resizeTimer.Interval = 100; // 100 ms
+        //        resizeTimer.Tick += (s, e) => ResizeActiveControl();
+        //        resizeTimer.Start();
+        //    }
+        //}
 
-        private void StopResizeTimer()
-        {
-            if (resizeTimer != null)
-            {
-                resizeTimer.Stop();
-                resizeTimer.Dispose();
-                resizeTimer = null;
-            }
-        }
+        //private void StopResizeTimer()
+        //{
+        //    if (resizeTimer != null)
+        //    {
+        //        resizeTimer.Stop();
+        //        resizeTimer.Dispose();
+        //        resizeTimer = null;
+        //    }
+        //}
 
         private void ResizeActiveControl()
         {
@@ -657,7 +670,7 @@ namespace Grafikeditor14
                 panel.MouseDown += new MouseEventHandler(FeldInPanel_MouseDown);
                 panel.MouseMove += new MouseEventHandler(FeldInPanel_MouseMove);
                 panel.MouseUp += new MouseEventHandler(FeldInPanel_MouseUp);
-                panel.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
+                //panel.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
 
                 panel2.Controls.Add(panel);
                 panel2.Controls.Remove(activeControl);
@@ -685,7 +698,7 @@ namespace Grafikeditor14
                 label.MouseDown += new MouseEventHandler(FeldInPanel_MouseDown);
                 label.MouseMove += new MouseEventHandler(FeldInPanel_MouseMove);
                 label.MouseUp += new MouseEventHandler(FeldInPanel_MouseUp);
-                label.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
+                //label.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
 
                 panel2.Controls.Add(label);
                 panel2.Controls.Remove(activeControl);
@@ -805,7 +818,7 @@ namespace Grafikeditor14
             kopie.MouseDown += new MouseEventHandler(FeldInPanel_MouseDown);
             kopie.MouseMove += new MouseEventHandler(FeldInPanel_MouseMove);
             kopie.MouseUp += new MouseEventHandler(FeldInPanel_MouseUp);
-            kopie.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
+            //kopie.PreviewKeyDown += new PreviewKeyDownEventHandler(FeldInPanel_PreviewKeyDown);
             kopie.Click += NeuesLabel_Click;
 
             panel2.Controls.Add(kopie);
@@ -1002,6 +1015,113 @@ namespace Grafikeditor14
                 richTextBox7.Clear();            // Eigenschaftenanzeige leeren
                 toolStripStatusLabel2.Text = ""; // Status zurücksetzen
             }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            //if (_state.ActiveControl == null)            // kein Feld ausgewählt
+            //    return base.ProcessCmdKey(ref msg, keyData);
+
+            //bool ctrl = (keyData & Keys.Control) == Keys.Control;
+            //Keys arrows = keyData & ~Keys.Control;       // Modifier herausfiltern
+
+            //switch (arrows)
+            //{
+            //    case Keys.Left: HandleArrow(ctrl, -1, 0); return true;
+            //    case Keys.Right: HandleArrow(ctrl, 1, 0); return true;
+            //    case Keys.Up: HandleArrow(ctrl, 0, -1); return true;
+            //    case Keys.Down: HandleArrow(ctrl, 0, 1); return true;
+            //}
+            //return base.ProcessCmdKey(ref msg, keyData);
+
+            if (_state.ActiveControl == null)
+                return base.ProcessCmdKey(ref msg, keyData);
+
+            bool ctrl = (keyData & Keys.Control) == Keys.Control;
+            Keys arrow = keyData & ~Keys.Control;
+
+            int dx = 0, dy = 0;
+            switch (arrow)
+            {
+                case Keys.Left: dx = -1; break;
+                case Keys.Right: dx = 1; break;
+                case Keys.Up: dy = -1; break;
+                case Keys.Down: dy = 1; break;
+                default: return base.ProcessCmdKey(ref msg, keyData);
+            }
+
+            if (ctrl)
+                VerarbeiteResize(dx, dy);
+            else
+                VerarbeiteMove(dx, dy);
+
+            return true;  // Taste verarbeitet
+        }
+
+        private void VerarbeiteResize(int dxSign, int dySign)
+        {
+            Control c = _state.ActiveControl;
+            int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
+
+            Size ziel = new Size(
+                Math.Max(5, c.Width + dxSign * step),
+                Math.Max(5, c.Height + dySign * step));
+
+            IEditorCommand cmd = new ResizeCommand(c, ziel);
+            _undoMgr.Do(cmd);
+
+            ZeigeHighlightUm(c);
+        }
+
+        private void VerarbeiteMove(int dxSign, int dySign)
+        {
+            Control c = _state.ActiveControl;
+            int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
+
+            Point ziel = new Point(
+                c.Left + dxSign * step,
+                c.Top + dySign * step);
+
+            if (_state.RasterAktiv)
+                ziel = SnapToGrid(ziel);
+
+            IEditorCommand cmd = new MoveCommand(c, ziel);
+            _undoMgr.Do(cmd);
+
+            ZeigeHighlightUm(c);
+        }
+
+        private void HandleArrow(bool ctrl, int dxSign, int dySign)
+        {
+            Control c = _state.ActiveControl;
+
+            // Verschieben
+            if (!ctrl)
+            {
+                int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
+                Point newPos = new Point(c.Left + dxSign * step,
+                                         c.Top + dySign * step);
+
+                // Raster-Snap erzwingen, wenn aktiv
+                if (_state.RasterAktiv)
+                    newPos = SnapToGrid(newPos);
+
+                var cmd = new MoveCommand(c, newPos);
+                _undoMgr.Do(cmd);
+            }
+            // Skalieren
+            else
+            {
+                int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
+                Size newSize = new Size(
+                    Math.Max(5, c.Width + dxSign * step),   // Links/Rechts → Breite
+                    Math.Max(5, c.Height + dySign * step));  // Oben/Unten  → Höhe
+
+                var cmd = new ResizeCommand(c, newSize);
+                _undoMgr.Do(cmd);
+            }
+
+            ZeigeHighlightUm(c);          // roten Rahmen anpassen
         }
     }
 }
