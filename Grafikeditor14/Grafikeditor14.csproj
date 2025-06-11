@@ -49,6 +49,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CanvasPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Core\EditorState.cs" />
     <Compile Include="Core\IEditorCommand.cs" />
     <Compile Include="Core\MoveCommand.cs" />

@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using Grafikeditor14.Core;
+using Grafikeditor14.Controls;
 using System.IO;
 
 namespace Grafikeditor14
@@ -22,8 +23,12 @@ namespace Grafikeditor14
 
         private readonly UndoRedoManager _undoMgr = new UndoRedoManager();
         private readonly EditorState _state = new EditorState();
-
         private readonly List<Control> _selection = new List<Control>();
+
+        private CanvasPanel canvas
+        {
+            get { return (CanvasPanel)panel2; }
+        }
 
         #region allgemeine Funktion
         
@@ -51,14 +56,6 @@ namespace Grafikeditor14
         {
             isMouseDown = false;
         }
-
-        //Panel resizeOverlay = new Panel();
-
-        //private void ResizeOverlay_Paint(object sender, PaintEventArgs e)
-        //{
-        //    Rectangle gripRect = new Rectangle(resizeOverlay.Width - cGrip, resizeOverlay.Height - cGrip, cGrip, cGrip);
-        //    ControlPaint.DrawSizeGrip(e.Graphics, this.BackColor, gripRect);
-        //}
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTBOTTOMRIGHT = 17;
@@ -120,7 +117,7 @@ namespace Grafikeditor14
             toolStripTextBox1.Text = panel2.Width.ToString();
             toolStripTextBox2.Text = panel2.Height.ToString();
 
-            toolStripTextBox3.Text = rasterAbstand.ToString();
+            toolStripTextBox3.Text = _state.RasterAktiv.ToString();
 
             highlightBorder = new Panel
             {
@@ -270,76 +267,23 @@ namespace Grafikeditor14
         private void toolStripMenuItemOK_Rastergröße_Click(object sender, EventArgs e)
         {
             toolStripDropDownButton2.DropDown.AutoClose = false;
-            rasterAbstand = Convert.ToInt32(toolStripTextBox3.Text);
-            if (rasterActive == true)
-            {
-                RedrawRaster(rasterFarbe);
-            }
+            int abstand = Convert.ToInt32(toolStripTextBox3.Text);
+            canvas.RasterAbstand = abstand;       // Canvas baut Raster neu auf
+            _state.RasterAbstand = abstand;       // für SnapToGrid & Pfeiltasten
         }
 
-        private bool rasterActive;
         private void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
             toolStripDropDownButton2.DropDown.AutoClose = false;
-            rasterActive = true;
-            using (Graphics g = panel2.CreateGraphics())
-            {
-                DrawPoints(g, rasterFarbe, rasterAbstand);
-            }
+            canvas.RasterAktiv = true;            // Canvas zeigt Raster selbst an
+            _state.RasterAktiv = true;           // für SnapToGrid & Pfeiltasten
         }
 
         private void toolStripMenuItem4_Click(object sender, EventArgs e)
         {
             toolStripDropDownButton2.DropDown.AutoClose = false;
-            rasterActive = false;
-            ClearRasterOnPanel();
-        }
-
-        private List<Point> rasterPoints = new List<Point>();
-        private int rasterAbstand = 10;
-        private Color rasterFarbe = Color.White;
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-            if (rasterActive == true)
-            {
-                using (Graphics g = panel2.CreateGraphics())
-                {
-                    DrawPoints(g, rasterFarbe, rasterAbstand);
-                }
-            }
-        }
-
-        private void DrawPoints(Graphics g, Color color, int pixelSize)
-        {
-            SolidBrush brush = new SolidBrush(color);
-            rasterPoints.Clear();
-            for (int x = 0; x < panel2.Width; x += pixelSize)
-            {
-                for (int y = 0; y < panel2.Height; y += pixelSize)
-                {
-                    g.FillRectangle(brush, x, y, 1, 1);
-                    rasterPoints.Add(new Point(x, y));
-                }
-            }
-        }
-
-        private void ClearRasterOnPanel()
-        {
-            panel2.Invalidate();
-            panel2.Update();
-        }
-
-        private void RedrawRaster(Color color)
-        {
-            ClearRasterOnPanel();
-            using (Graphics g = panel2.CreateGraphics())
-            {
-                SolidBrush brush = new SolidBrush(color);
-                foreach (Point point in rasterPoints)
-                {
-                    g.FillRectangle(brush, point.X, point.Y, 1, 1);
-                }
-            }
+            canvas.RasterAktiv = false;
+            _state.RasterAktiv = false;
         }
 
         private void toolStripMenuItemSchließen_Rastergröße_Click(object sender, EventArgs e)
@@ -464,17 +408,14 @@ namespace Grafikeditor14
 
         private Point SnapToGrid(Point position)
         {
-            if (rasterActive)
+            if (canvas.RasterAktiv)
             {
-                int x = (position.X + rasterAbstand / 2) / rasterAbstand * rasterAbstand;
-                int y = (position.Y + rasterAbstand / 2) / rasterAbstand * rasterAbstand;
-
+                int gap = canvas.RasterAbstand;
+                int x = (position.X + gap / 2) / gap * gap;
+                int y = (position.Y + gap / 2) / gap * gap;
                 return new Point(x, y);
             }
-            else
-            {
-                return new Point(position.X, position.Y);
-            }
+            return position;
         }
 
         private void toolStripButton_ToggleLabelPanel_Click(object sender, EventArgs e)
@@ -709,13 +650,6 @@ namespace Grafikeditor14
 
             _state.ActiveControl.Tag = BuildTagArray(_state.ActiveControl, auftragsMerkmal);
 
-            //MessageBox.Show(
-            //    "Auftragsmerkmal \"" + auftragsMerkmal +
-            //    "\" wurde Feld \"" + _state.ActiveControl.Name + "\" zugeordnet.",
-            //    "Erfolgreich",
-            //    MessageBoxButtons.OK,
-            //    MessageBoxIcon.Information);
-
             DisplayFieldProperties(_state.ActiveControl);
         }
 
@@ -877,20 +811,6 @@ namespace Grafikeditor14
             richTextBox7.Clear();
         }
 
-        //private void AddToSelection(Control ctrl)
-        //{
-        //    if (!_selection.Contains(ctrl))
-        //        _selection.Add(ctrl);
-
-        //    _state.ActiveControl = ctrl;     // Lead-Control immer setzen
-        //    RefreshHighlight();
-
-        //    if (_selection.Count == 1)
-        //        DisplayFieldProperties(ctrl);
-        //    else
-        //        richTextBox7.Clear();
-        //}
-
         private void RemoveFromSelection(Control ctrl)
         {
             _selection.Remove(ctrl);
@@ -1046,47 +966,6 @@ namespace Grafikeditor14
         {
             Erzeugen,
             Bearbeiten
-        }
-
-        private Arbeitsmodus aktuellerModus = Arbeitsmodus.Erzeugen;
-
-        private void toolStripButton_ModusErzeugen_Click(object sender, EventArgs e)
-        {
-            aktuellerModus = Arbeitsmodus.Erzeugen;
-            labelStatus.Text = "Modus: Erzeugen";
-            richTextBox1.Clear();
-            comboBox1.SelectedIndex = -1;
-        }
-
-        private void toolStripButton_ModusBearbeiten_Click(object sender, EventArgs e)
-        {
-            aktuellerModus = Arbeitsmodus.Bearbeiten;
-            labelStatus.Text = "Modus: Bearbeiten";
-        }
-
-        //private void NeuesLabel_Click(object sender, EventArgs e)
-        //{
-        //    if (aktuellerModus != Arbeitsmodus.Bearbeiten) return;
-
-        //    ClearSelection();
-        //    AddToSelection(sender as Control);
-        //    DisplayFieldProperties(_state.ActiveControl);
-        //}
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (aktuellerModus != Arbeitsmodus.Bearbeiten) return;
-
-            // Nur im Bearbeitungsmodus werden Eigenschaften verändert
-            // [dein bestehender Code bleibt unverändert]
-        }
-
-        private void SetModusVisuell()
-        {
-            if (aktuellerModus == Arbeitsmodus.Erzeugen)
-                panelKonfiguration.BackColor = Color.LightGray;
-            else
-                panelKonfiguration.BackColor = Color.LightGreen;
         }
     }
 }
