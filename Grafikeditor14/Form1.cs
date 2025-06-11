@@ -708,12 +708,12 @@ namespace Grafikeditor14
 
             _state.ActiveControl.Tag = BuildTagArray(_state.ActiveControl, auftragsMerkmal);
 
-            MessageBox.Show(
-                "Auftragsmerkmal \"" + auftragsMerkmal +
-                "\" wurde Feld \"" + _state.ActiveControl.Name + "\" zugeordnet.",
-                "Erfolgreich",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            //MessageBox.Show(
+            //    "Auftragsmerkmal \"" + auftragsMerkmal +
+            //    "\" wurde Feld \"" + _state.ActiveControl.Name + "\" zugeordnet.",
+            //    "Erfolgreich",
+            //    MessageBoxButtons.OK,
+            //    MessageBoxIcon.Information);
 
             DisplayFieldProperties(_state.ActiveControl);
         }
@@ -928,9 +928,83 @@ namespace Grafikeditor14
             highlightBorder.SendToBack();
         }
 
-        private void tSB_Auswahlen_off_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Liest aus dem Tag-Array (Index 14) den Eintrag „DSFeldname=…“
+        /// und wählt – falls gefunden – den Eintrag in comboBox1.
+        /// Kompatibel mit .NET 4.0 (ohne Null-Conditional / Pattern-Matching).
+        /// </summary>
+        private void SyncComboBoxWithField(Control ctrl)
         {
-            ClearSelection();
+            if (ctrl == null) return;
+
+            string feldname = null;
+
+            // Variante 1: Feld.Tag ist ein string[]
+            string[] tagArr = ctrl.Tag as string[];
+            if (tagArr != null && tagArr.Length > 14)
+            {
+                feldname = ExtractFieldName(tagArr[14]);
+            }
+            else
+            {
+                // Variante 2: Feld.Tag ist ein einzelner String
+                string tagStr = ctrl.Tag as string;
+                if (!string.IsNullOrEmpty(tagStr))
+                {
+                    string[] parts = tagStr.Split(
+                        new[] { ';', ',', '|' },
+                        StringSplitOptions.RemoveEmptyEntries);
+
+                    if (parts.Length > 14)
+                        feldname = ExtractFieldName(parts[14]);
+                    else
+                        feldname = ExtractFieldName(tagStr);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(feldname))
+            {
+                int idx = comboBox1.FindStringExact(feldname); // -1, falls nicht gefunden
+                comboBox1.SelectedIndex = idx;
+            }
+        }
+
+        /// <summary>
+        /// Entfernt optionalen Prefix „DSFeldname=“.
+        /// </summary>
+        private static string ExtractFieldName(string entry)
+        {
+            const string prefix = "DSFeldname=";
+            return entry.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+                   ? entry.Substring(prefix.Length)
+                   : entry;
+        }
+
+        private void AddToSelection(Control ctrl)
+        {
+            if (!_selection.Contains(ctrl))
+                _selection.Add(ctrl);
+
+            _state.ActiveControl = ctrl;
+            RefreshHighlight();
+
+            if (_selection.Count == 1)
+            {
+                DisplayFieldProperties(ctrl);
+                SyncComboBoxWithField(ctrl);   //  <<< NEU >>>
+            }
+            else
+            {
+                richTextBox7.Clear();
+            }
+        }
+
+        private void Field_Click(object sender, EventArgs e)
+        {
+            Control field = sender as Control;
+            if (field == null) return;
+
+            SyncComboBoxWithField(field);   // erledigt alles Weitere
         }
     }
 }
