@@ -87,7 +87,7 @@
             this.skinControl6 = new technicontrol.Visualization.SkinControl();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.skinControl7 = new technicontrol.Visualization.SkinControl();
+            this.sC_B_Speichern = new technicontrol.Visualization.SkinControl();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -106,7 +106,6 @@
             this.panel12 = new System.Windows.Forms.Panel();
             this.skinControl4 = new technicontrol.Visualization.SkinControl();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
-            this.tSB_Auswahlen_off = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -321,7 +320,6 @@
             this.toolStripSeparator4,
             this.toolStripDropDownButton2,
             this.toolStripSeparator1,
-            this.tSB_Auswahlen_off,
             this.toolStripButton_NeuesFeldErzeugen,
             this.toolStripSeparator3,
             this.toolStripButton_ToggleLabelPanel,
@@ -656,7 +654,7 @@
             this.flowLayoutPanel3.Controls.Add(this.skinControl6);
             this.flowLayoutPanel3.Controls.Add(this.label4);
             this.flowLayoutPanel3.Controls.Add(this.comboBox3);
-            this.flowLayoutPanel3.Controls.Add(this.skinControl7);
+            this.flowLayoutPanel3.Controls.Add(this.sC_B_Speichern);
             this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 22);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
@@ -748,22 +746,23 @@
             this.comboBox3.Size = new System.Drawing.Size(179, 26);
             this.comboBox3.TabIndex = 5;
             // 
-            // skinControl7
+            // sC_B_Speichern
             // 
-            this.skinControl7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.sC_B_Speichern.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.skinControl7.AutoSize = false;
-            this.skinControl7.BackColor = System.Drawing.Color.Transparent;
-            this.skinControl7.Checked = false;
-            this.skinControl7.ForeColor = System.Drawing.Color.White;
-            this.skinControl7.Frame = 2;
-            this.skinControl7.Location = new System.Drawing.Point(3, 248);
-            this.skinControl7.Name = "skinControl7";
-            this.skinControl7.Size = new System.Drawing.Size(179, 48);
-            this.skinControl7.SkinName = "Button Gloss 03.16";
-            this.skinControl7.TabIndex = 6;
-            this.skinControl7.Text = "Speichern";
-            this.skinControl7.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_Speichern.AutoSize = false;
+            this.sC_B_Speichern.BackColor = System.Drawing.Color.Transparent;
+            this.sC_B_Speichern.Checked = false;
+            this.sC_B_Speichern.ForeColor = System.Drawing.Color.White;
+            this.sC_B_Speichern.Frame = 2;
+            this.sC_B_Speichern.Location = new System.Drawing.Point(3, 248);
+            this.sC_B_Speichern.Name = "sC_B_Speichern";
+            this.sC_B_Speichern.Size = new System.Drawing.Size(179, 48);
+            this.sC_B_Speichern.SkinName = "Button Gloss 03.16";
+            this.sC_B_Speichern.TabIndex = 6;
+            this.sC_B_Speichern.Text = "Speichern";
+            this.sC_B_Speichern.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_Speichern.Click += new System.EventHandler(this.sC_B_Speichern_Click);
             // 
             // flowLayoutPanel4
             // 
@@ -1040,16 +1039,6 @@
             this.richTextBox2.TabIndex = 5;
             this.richTextBox2.Text = "Arial, 12, Bold";
             // 
-            // tSB_Auswahlen_off
-            // 
-            this.tSB_Auswahlen_off.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.tSB_Auswahlen_off.Image = ((System.Drawing.Image)(resources.GetObject("tSB_Auswahlen_off.Image")));
-            this.tSB_Auswahlen_off.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tSB_Auswahlen_off.Name = "tSB_Auswahlen_off";
-            this.tSB_Auswahlen_off.Size = new System.Drawing.Size(87, 22);
-            this.tSB_Auswahlen_off.Text = "Auswahlen off";
-            this.tSB_Auswahlen_off.Click += new System.EventHandler(this.tSB_Auswahlen_off_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -1152,7 +1141,7 @@
         private technicontrol.Visualization.SkinControl skinControl6;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBox3;
-        private technicontrol.Visualization.SkinControl skinControl7;
+        private technicontrol.Visualization.SkinControl sC_B_Speichern;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
@@ -1178,7 +1167,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.RichTextBox richTextBox7;
-        private System.Windows.Forms.ToolStripButton tSB_Auswahlen_off;
     }
 }
 

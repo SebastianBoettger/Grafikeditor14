@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using Grafikeditor14.Core;
+using System.IO;
 
 namespace Grafikeditor14
 {
@@ -51,13 +52,13 @@ namespace Grafikeditor14
             isMouseDown = false;
         }
 
-        Panel resizeOverlay;
+        //Panel resizeOverlay = new Panel();
 
-        private void ResizeOverlay_Paint(object sender, PaintEventArgs e)
-        {
-            Rectangle gripRect = new Rectangle(resizeOverlay.Width - cGrip, resizeOverlay.Height - cGrip, cGrip, cGrip);
-            ControlPaint.DrawSizeGrip(e.Graphics, this.BackColor, gripRect);
-        }
+        //private void ResizeOverlay_Paint(object sender, PaintEventArgs e)
+        //{
+        //    Rectangle gripRect = new Rectangle(resizeOverlay.Width - cGrip, resizeOverlay.Height - cGrip, cGrip, cGrip);
+        //    ControlPaint.DrawSizeGrip(e.Graphics, this.BackColor, gripRect);
+        //}
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTBOTTOMRIGHT = 17;
@@ -876,19 +877,19 @@ namespace Grafikeditor14
             richTextBox7.Clear();
         }
 
-        private void AddToSelection(Control ctrl)
-        {
-            if (!_selection.Contains(ctrl))
-                _selection.Add(ctrl);
+        //private void AddToSelection(Control ctrl)
+        //{
+        //    if (!_selection.Contains(ctrl))
+        //        _selection.Add(ctrl);
 
-            _state.ActiveControl = ctrl;     // Lead-Control immer setzen
-            RefreshHighlight();
+        //    _state.ActiveControl = ctrl;     // Lead-Control immer setzen
+        //    RefreshHighlight();
 
-            if (_selection.Count == 1)
-                DisplayFieldProperties(ctrl);
-            else
-                richTextBox7.Clear();
-        }
+        //    if (_selection.Count == 1)
+        //        DisplayFieldProperties(ctrl);
+        //    else
+        //        richTextBox7.Clear();
+        //}
 
         private void RemoveFromSelection(Control ctrl)
         {
@@ -1005,6 +1006,87 @@ namespace Grafikeditor14
             if (field == null) return;
 
             SyncComboBoxWithField(field);   // erledigt alles Weitere
+        }
+
+        private void SpeichereFeldStrukturAlsTXT(string pfad)
+        {
+            using (StreamWriter writer = new StreamWriter(pfad, false, Encoding.UTF8))
+            {
+                int index = 0;
+                foreach (Control ctrl in panel2.Controls)
+                {
+                    string[] tagArr = ctrl.Tag as string[];
+                    if (tagArr == null || tagArr.Length < 15) continue;
+
+                    writer.WriteLine("[{0}]", index);
+                    foreach (string zeile in tagArr)
+                    {
+                        writer.WriteLine(zeile);
+                    }
+                    writer.WriteLine(); // Leerzeile zwischen Einträgen
+                    index++;
+                }
+            }
+        }
+
+        private void sC_B_Speichern_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "TXT-Dateien (*.txt)|*.txt";
+            sfd.FileName = "ExportFeldstruktur.txt";
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                SpeichereFeldStrukturAlsTXT(sfd.FileName);
+                MessageBox.Show("Datei wurde erfolgreich gespeichert.", "Fertig", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private enum Arbeitsmodus
+        {
+            Erzeugen,
+            Bearbeiten
+        }
+
+        private Arbeitsmodus aktuellerModus = Arbeitsmodus.Erzeugen;
+
+        private void toolStripButton_ModusErzeugen_Click(object sender, EventArgs e)
+        {
+            aktuellerModus = Arbeitsmodus.Erzeugen;
+            labelStatus.Text = "Modus: Erzeugen";
+            richTextBox1.Clear();
+            comboBox1.SelectedIndex = -1;
+        }
+
+        private void toolStripButton_ModusBearbeiten_Click(object sender, EventArgs e)
+        {
+            aktuellerModus = Arbeitsmodus.Bearbeiten;
+            labelStatus.Text = "Modus: Bearbeiten";
+        }
+
+        //private void NeuesLabel_Click(object sender, EventArgs e)
+        //{
+        //    if (aktuellerModus != Arbeitsmodus.Bearbeiten) return;
+
+        //    ClearSelection();
+        //    AddToSelection(sender as Control);
+        //    DisplayFieldProperties(_state.ActiveControl);
+        //}
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (aktuellerModus != Arbeitsmodus.Bearbeiten) return;
+
+            // Nur im Bearbeitungsmodus werden Eigenschaften verändert
+            // [dein bestehender Code bleibt unverändert]
+        }
+
+        private void SetModusVisuell()
+        {
+            if (aktuellerModus == Arbeitsmodus.Erzeugen)
+                panelKonfiguration.BackColor = Color.LightGray;
+            else
+                panelKonfiguration.BackColor = Color.LightGreen;
         }
     }
 }

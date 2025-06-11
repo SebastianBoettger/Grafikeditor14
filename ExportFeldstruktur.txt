@@ -1,0 +1,51 @@
+﻿[0]
+Alignment=32
+PosY=66
+Fontgröße=12
+Text=Neues Feld 1
+Füllzeichen=
+Höhe=25
+Textfarbe=-16777216
+Stellen=0
+PosX=83
+FeldName=Feld1
+FontName=Arial
+Breite=128
+Fontstyle=1
+Farbe=-986896
+DSFeldname=*AB03300_B Anzahl Schweissungen
+
+[1]
+Alignment=16
+PosY=144
+Fontgröße=12
+Text=Neues Feld 2
+Füllzeichen=
+Höhe=25
+Textfarbe=-16777216
+Stellen=0
+PosX=506
+FeldName=Feld2
+FontName=Arial
+Breite=128
+Fontstyle=1
+Farbe=-986896
+DSFeldname=*AB03300_B Schweissung 01 Position
+
+[2]
+Alignment=48
+PosY=144
+Fontgröße=12
+Text=Neues Feld 3
+Füllzeichen=
+Höhe=25
+Textfarbe=-16777216
+Stellen=0
+PosX=506
+FeldName=Feld3
+FontName=Arial
+Breite=128
+Fontstyle=1
+Farbe=-986896
+DSFeldname=*AB03300_B Schweissung 01 Werkzeug
+
