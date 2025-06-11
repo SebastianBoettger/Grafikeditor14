@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Threading;
 using Grafikeditor14.Core;
 using Grafikeditor14.Controls;
+using Grafikeditor14.Command;
 using System.IO;
 
 namespace Grafikeditor14
@@ -24,6 +25,7 @@ namespace Grafikeditor14
         private readonly UndoRedoManager _undoMgr = new UndoRedoManager();
         private readonly EditorState _state = new EditorState();
         private readonly List<Control> _selection = new List<Control>();
+        private readonly PendingFieldProps _pending = new PendingFieldProps();
 
         private CanvasPanel canvas
         {
@@ -583,74 +585,20 @@ namespace Grafikeditor14
         private ContentAlignment currentAlignment = ContentAlignment.MiddleCenter;
         private void radioButton_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton1.Checked)
-                currentAlignment = ContentAlignment.MiddleLeft;
-            else if (radioButton2.Checked)
-                currentAlignment = ContentAlignment.MiddleCenter;
-            else if (radioButton3.Checked)
-                currentAlignment = ContentAlignment.MiddleRight;
-
-            Label lbl = _state.ActiveControl as Label;
-            if (lbl != null)
-                lbl.TextAlign = currentAlignment;
+            if (radioButton1.Checked) _pending.Alignment = ContentAlignment.MiddleLeft;
+            else if (radioButton2.Checked) _pending.Alignment = ContentAlignment.MiddleCenter;
+            else if (radioButton3.Checked) _pending.Alignment = ContentAlignment.MiddleRight;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_state.ActiveControl == null || comboBox1.SelectedItem == null)
-                return;
+            if (comboBox1.SelectedItem != null)
+                _pending.AuftragMerkmal = comboBox1.SelectedItem.ToString();
+        }
 
-            string auftragsMerkmal = comboBox1.SelectedItem.ToString();
-
-            foreach (Control ctrl in panel2.Controls)
-            {
-                string[] tagArray = ctrl.Tag as string[];
-                if (tagArray != null && tagArray.Length == 15 && tagArray[14] == "DSFeldname=" + auftragsMerkmal)
-                {
-                    MessageBox.Show(
-                        "Das Auftragsmerkmal \"" + auftragsMerkmal + "\" ist bereits dem Feld \"" +
-                        ctrl.Name + "\" zugeordnet.",
-                        "Hinweis",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    return;
-                }
-            }
-
-            int alignVal = 32;
-            Label lbl = _state.ActiveControl as Label;
-            if (lbl != null)
-            {
-                if (lbl.TextAlign == ContentAlignment.MiddleLeft) alignVal = 16;
-                else if (lbl.TextAlign == ContentAlignment.MiddleRight) alignVal = 48;
-            }
-
-            int textColor = (lbl != null) ? lbl.ForeColor.ToArgb() : 0;
-            float fontSize = (lbl != null) ? lbl.Font.Size : 0f;
-            string fontName = (lbl != null) ? lbl.Font.Name : "";
-            int fontStyle = (lbl != null) ? (int)lbl.Font.Style : 0;
-            string textVal = (lbl != null) ? lbl.Text : "";
-
-            string[] tagData = new string[15];
-            tagData[0] = "Alignment=" + alignVal;
-            tagData[1] = "PosY=" + _state.ActiveControl.Top;
-            tagData[2] = "Fontgröße=" + fontSize;
-            tagData[3] = "Text=" + textVal;
-            tagData[4] = "Füllzeichen=";                       // (kommt später)
-            tagData[5] = "Höhe=" + _state.ActiveControl.Height;
-            tagData[6] = "Textfarbe=" + textColor;
-            tagData[7] = "Stellen=0";
-            tagData[8] = "PosX=" + _state.ActiveControl.Left;
-            tagData[9] = "FeldName=" + _state.ActiveControl.Name;
-            tagData[10] = "FontName=" + fontName;
-            tagData[11] = "Breite=" + _state.ActiveControl.Width;
-            tagData[12] = "Fontstyle=" + fontStyle;
-            tagData[13] = "Farbe=" + _state.ActiveControl.BackColor.ToArgb();
-            tagData[14] = "DSFeldname=" + auftragsMerkmal;
-
-            _state.ActiveControl.Tag = BuildTagArray(_state.ActiveControl, auftragsMerkmal);
-
-            DisplayFieldProperties(_state.ActiveControl);
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            _pending.Text = richTextBox1.Text;
         }
 
         private void DisplayFieldProperties(Control ctrl)
@@ -966,6 +914,79 @@ namespace Grafikeditor14
         {
             Erzeugen,
             Bearbeiten
+        }
+
+        private void sC_Anwenden_Click(object sender, EventArgs e)
+        {
+            if (_state.ActiveControl == null) return;
+
+            Control ctrl = _state.ActiveControl;
+            Label lbl = ctrl as Label;
+            Panel pnl = ctrl as Panel;
+
+            // Undo-Gruppe eröffnen
+            _undoMgr.Do(new MoveCommand(ctrl, ctrl.Location)); // Dummy zum Starten einer Gruppe
+
+            // Hintergrund
+            if (ctrl.BackColor != _pending.BackColor)
+                _undoMgr.Do(new ColorCommand(ctrl, _pending.BackColor, true)); // ColorCommand selbst anlegen
+
+            // Text / Schrift / Ausrichtung nur bei Label
+            if (lbl != null)
+            {
+                if (lbl.Text != _pending.Text)
+                    _undoMgr.Do(new TextCommand(lbl, _pending.Text));
+
+                if (!lbl.Font.Equals(_pending.Font))
+                    _undoMgr.Do(new FontCommand(lbl, _pending.Font));
+
+                if (lbl.ForeColor != _pending.ForeColor)
+                    _undoMgr.Do(new ColorCommand(lbl, _pending.ForeColor, false));
+
+                if (lbl.TextAlign != _pending.Alignment)
+                    _undoMgr.Do(new AlignCommand(lbl, _pending.Alignment));
+            }
+
+            // Auftragsmerkmal ins Tag-Array übernehmen
+            if (!string.IsNullOrEmpty(_pending.AuftragMerkmal))
+                ctrl.Tag = BuildTagArray(ctrl, _pending.AuftragMerkmal);
+
+            // Highlight & Properties-Anzeige neu zeichnen
+            DisplayFieldProperties(ctrl);
+            RefreshHighlight();
+        }
+
+        private readonly ColorDialog _colorDlg = new ColorDialog();
+
+        /* ---------------- Hintergrundfarbe wählen ---------------- */
+        private void tsbBackColor_Click(object sender, EventArgs e)
+        {
+            if (_colorDlg.ShowDialog() == DialogResult.OK)
+            {
+                Color pickedColor = _colorDlg.Color;
+
+                // 1) Zwischenspeicher setzen  →  sC_Anwenden_Click liest das später aus
+                _pending.BackColor = pickedColor;
+
+                // 2) Optional: Live-Vorschau auf dem aktuell markierten Feld
+                if (_state.ActiveControl != null)
+                    _state.ActiveControl.BackColor = pickedColor;
+            }
+        }
+
+        /* ---------------- Schriftfarbe wählen ---------------- */
+        private void tsbForeColor_Click(object sender, EventArgs e)
+        {
+            if (_colorDlg.ShowDialog() == DialogResult.OK)
+            {
+                Color pickedColor = _colorDlg.Color;
+
+                _pending.ForeColor = pickedColor;
+
+                Label lbl = _state.ActiveControl as Label;
+                if (lbl != null)                       // Live-Vorschau nur für Labels
+                    lbl.ForeColor = pickedColor;
+            }
         }
     }
 }

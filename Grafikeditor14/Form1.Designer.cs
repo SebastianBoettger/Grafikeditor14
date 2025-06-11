@@ -40,7 +40,6 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new Grafikeditor14.Controls.CanvasPanel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -106,6 +105,8 @@
             this.panel12 = new System.Windows.Forms.Panel();
             this.skinControl4 = new technicontrol.Visualization.SkinControl();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.sC_Anwenden = new technicontrol.Visualization.SkinControl();
+            this.panel2 = new Grafikeditor14.Controls.CanvasPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -255,17 +256,6 @@
             this.panel1.Padding = new System.Windows.Forms.Padding(3);
             this.panel1.Size = new System.Drawing.Size(1146, 319);
             this.panel1.TabIndex = 0;
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Black;
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1140, 313);
-            this.panel2.TabIndex = 0;
-            this.panel2.SizeChanged += new System.EventHandler(this.panel2_SizeChanged);
-            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
             // 
             // tabPage2
             // 
@@ -490,7 +480,7 @@
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 473F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(1188, 473);
             this.tableLayoutPanel3.TabIndex = 1;
             // 
@@ -767,6 +757,7 @@
             // 
             this.flowLayoutPanel4.Controls.Add(this.groupBox1);
             this.flowLayoutPanel4.Controls.Add(this.groupBox2);
+            this.flowLayoutPanel4.Controls.Add(this.sC_Anwenden);
             this.flowLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel4.Location = new System.Drawing.Point(196, 3);
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
@@ -1038,6 +1029,38 @@
             this.richTextBox2.TabIndex = 5;
             this.richTextBox2.Text = "Arial, 12, Bold";
             // 
+            // sC_Anwenden
+            // 
+            this.sC_Anwenden.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.sC_Anwenden.AutoSize = false;
+            this.sC_Anwenden.BackColor = System.Drawing.Color.Transparent;
+            this.sC_Anwenden.Checked = false;
+            this.sC_Anwenden.ForeColor = System.Drawing.Color.White;
+            this.sC_Anwenden.Frame = 2;
+            this.sC_Anwenden.Location = new System.Drawing.Point(3, 379);
+            this.sC_Anwenden.Name = "sC_Anwenden";
+            this.sC_Anwenden.Size = new System.Drawing.Size(391, 38);
+            this.sC_Anwenden.SkinName = "Button Gloss 02.04";
+            this.sC_Anwenden.TabIndex = 9;
+            this.sC_Anwenden.Text = "Auf ausgewähltem Feld anwenden";
+            this.sC_Anwenden.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_Anwenden.Click += new System.EventHandler(this.sC_Anwenden_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Black;
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.RasterAbstand = 10;
+            this.panel2.RasterAktiv = false;
+            this.panel2.RasterFarbe = System.Drawing.Color.LightGray;
+            this.panel2.Size = new System.Drawing.Size(1140, 313);
+            this.panel2.TabIndex = 0;
+            this.panel2.SizeChanged += new System.EventHandler(this.panel2_SizeChanged);
+            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -1166,6 +1189,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.RichTextBox richTextBox7;
+        private technicontrol.Visualization.SkinControl sC_Anwenden;
     }
 }
 
