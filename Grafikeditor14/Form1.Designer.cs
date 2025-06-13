@@ -42,7 +42,6 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new Grafikeditor14.Controls.CanvasPanel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -110,6 +109,7 @@
             this.rTB_schriftart = new System.Windows.Forms.RichTextBox();
             this.gB_Modi = new System.Windows.Forms.GroupBox();
             this.sC_B_NeuFelErz_Anw = new technicontrol.Visualization.SkinControl();
+            this.panel2 = new Grafikeditor14.Controls.CanvasPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -276,20 +276,6 @@
             this.panel1.Padding = new System.Windows.Forms.Padding(3);
             this.panel1.Size = new System.Drawing.Size(1146, 319);
             this.panel1.TabIndex = 0;
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Black;
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.RasterAbstand = 10;
-            this.panel2.RasterAktiv = false;
-            this.panel2.RasterFarbe = System.Drawing.Color.LightGray;
-            this.panel2.Size = new System.Drawing.Size(1140, 313);
-            this.panel2.TabIndex = 0;
-            this.panel2.SizeChanged += new System.EventHandler(this.panel2_SizeChanged);
-            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
             // 
             // tabPage2
             // 
@@ -1098,6 +1084,20 @@
             this.sC_B_NeuFelErz_Anw.Text = "Neues Feld erzeugen";
             this.sC_B_NeuFelErz_Anw.TextPadding = new System.Windows.Forms.Padding(0);
             this.sC_B_NeuFelErz_Anw.Click += new System.EventHandler(this.sC_B_NeuFelErz_Anw_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Black;
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.RasterAbstand = 10;
+            this.panel2.RasterAktiv = false;
+            this.panel2.RasterFarbe = System.Drawing.Color.LightGray;
+            this.panel2.Size = new System.Drawing.Size(1140, 313);
+            this.panel2.TabIndex = 0;
+            this.panel2.SizeChanged += new System.EventHandler(this.panel2_SizeChanged);
+            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
             // 
             // Form1
             // 

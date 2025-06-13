@@ -1783,20 +1783,16 @@ namespace Grafikeditor14
             {
                 LoadLayoutFromFile(dlg.FileName, panel2);
 
-                /* erstes Feld markieren – nur wenn vorhanden */
                 if (panel2.Controls.Count > 0)
                     AddToSelection(panel2.Controls[0]);
 
-                ///* ➜ Rahmen ganz nach vorn! */
-                //highlightBorder.BringToFront();
+                this.Text = "Grafikeditor – [" + Path.GetFileName(dlg.FileName) + "]";
 
-                this.Text = "Grafikeditor – [" +
-                            Path.GetFileName(dlg.FileName) + "]";
-                CenterPanelInTabPage();
+                ResizeFormToFitLayout();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Laden fehlgeschlagen:\n" + ex.Message,
+                MessageBox.Show("Laden fehlgeschlagen:\\n" + ex.Message,
                                 "Fehler", MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
             }
@@ -1867,7 +1863,7 @@ namespace Grafikeditor14
 
             if (!File.Exists(full))
             {
-                MessageBox.Show("Datei nicht gefunden:\n" + full,
+                MessageBox.Show("Datei nicht gefunden:\\n" + full,
                                 "Fehler", MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                 return;
@@ -1883,10 +1879,8 @@ namespace Grafikeditor14
             if (panel2.Controls.Count > 0)
                 AddToSelection(panel2.Controls[0]);
 
-            ///* ➜ Rahmen nach vorn */
-            //highlightBorder.BringToFront();
+            ResizeFormToFitLayout();
 
-            CenterPanelInTabPage();
             this.Text = "Grafikeditor – [" + fileName + "]";
         }
 
@@ -1979,6 +1973,52 @@ namespace Grafikeditor14
                 MessageBox.Show("Fehler beim Anlegen:\n" + ex.Message,
                                 "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ResizeFormToFitLayout()
+        {
+            int padding = 20;
+            int minWidth = 1200;
+            int minHeight = 1000;
+            int safetyMargin = 5;
+            int layoutOverheadWidth = 14;   // Differenz zwischen Form1 und tabPage1 (Form verliert Breite)
+            int layoutOverheadHeight = 10;  // Optional: z. B. durch Docking von tableLayoutPanel1
+
+            // Bildschirmarbeitsfläche bestimmen (des aktuellen Monitors)
+            Rectangle wa = Screen.FromHandle(this.Handle).WorkingArea;
+
+            // UI-Höhe berechnen: skinControl1 + menuStrip1 + toolStrip1 + statusStrip1
+            int uiHeight = skinControl1.Height + menuStrip1.Height + toolStrip1.Height + statusStrip1.Height;
+
+            // gewünschte Größen inkl. Rand und Korrekturfaktoren
+            int desiredWidth = panel1.Width + padding * 2 + layoutOverheadWidth;
+            int desiredHeight = panel1.Height + padding * 2 + uiHeight + layoutOverheadHeight;
+
+            // Begrenzung auf Bildschirm und Mindestgröße
+            int maxWidth = wa.Width - (2 * safetyMargin);
+            int maxHeight = wa.Height - (2 * safetyMargin);
+
+            int finalWidth = Math.Min(Math.Max(desiredWidth, minWidth), maxWidth);
+            int finalHeight = Math.Min(Math.Max(desiredHeight, minHeight), maxHeight);
+
+            // Fenstergröße setzen
+            this.Width = finalWidth;
+            this.Height = finalHeight;
+
+            // Fenster zentrieren auf aktuellem Bildschirm
+            this.Location = new Point(
+                wa.Left + (wa.Width - this.Width) / 2,
+                wa.Top + (wa.Height - this.Height) / 2
+            );
+
+            // Scrollbereich korrekt anpassen – exakt 20 px Rand zu jeder Seite sicherstellen
+            scrollPaddingPanel.Location = new Point(
+                panel1.Left + panel1.Width + (padding - panel1.Left),
+                panel1.Top + panel1.Height + (padding - panel1.Top)
+            );
+
+            // Zeichenfläche zentrieren
+            CenterPanelInTabPage();
         }
     }
 }
