@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,13 +54,19 @@
     <Compile Include="Command\ColorCommand.cs" />
     <Compile Include="Command\FontCommand.cs" />
     <Compile Include="Command\TextCommand.cs" />
+    <Compile Include="Controls\BorderPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\CanvasPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\GripControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Core\EditorState.cs" />
     <Compile Include="Core\IEditorCommand.cs" />
     <Compile Include="Core\MoveCommand.cs" />
-    <Compile Include="Core\PendingFieldProps.cs" />
+    <Compile Include="Klassen\PendingFieldProps.cs" />
     <Compile Include="Core\ResizeCommand.cs" />
     <Compile Include="Core\UndoRedoManager.cs" />
     <Compile Include="Form1.cs">
@@ -69,6 +76,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Keyboard.cs" />
+    <Compile Include="Klassen\FieldFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -92,6 +100,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Layouts\DEBD2F0015_CustomView.TXT" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

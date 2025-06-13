@@ -37,9 +37,12 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.dateiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.beendenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6_layout_laden = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6_layoutordner_öffnen = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new Grafikeditor14.Controls.CanvasPanel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -60,10 +63,10 @@
             this.toolStripMenuItemOK_Rastergröße = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSchließen_Rastergröße = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton_NeuesFeldErzeugen = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_ToggleLabelPanel = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripStatusLabelMode = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.skinControl8 = new technicontrol.Visualization.SkinControl();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
@@ -74,18 +77,18 @@
             this.richTextBox7 = new System.Windows.Forms.RichTextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.radioButton_linksbündig = new System.Windows.Forms.RadioButton();
+            this.radioButton_zentriert = new System.Windows.Forms.RadioButton();
+            this.radioButton_rechtsbündig = new System.Windows.Forms.RadioButton();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.skinControl5 = new technicontrol.Visualization.SkinControl();
+            this.sC_B_ansichauswahl = new technicontrol.Visualization.SkinControl();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.comboBox2_ansicht = new System.Windows.Forms.ComboBox();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.skinControl6 = new technicontrol.Visualization.SkinControl();
+            this.sC_B_ansichtSpeichernFür = new technicontrol.Visualization.SkinControl();
             this.label4 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.comboBox3_ansichtSpeichern = new System.Windows.Forms.ComboBox();
             this.sC_B_Speichern = new technicontrol.Visualization.SkinControl();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -93,20 +96,20 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.rTB_vorgabetext = new System.Windows.Forms.RichTextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.skinControl2 = new technicontrol.Visualization.SkinControl();
+            this.p_hintergrundfarbe = new System.Windows.Forms.Panel();
+            this.sC_B_hintergrundfarbe = new technicontrol.Visualization.SkinControl();
             this.panel10 = new System.Windows.Forms.Panel();
-            this.skinControl3 = new technicontrol.Visualization.SkinControl();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.sC_B_textfarbe = new technicontrol.Visualization.SkinControl();
+            this.p_textfarbe = new System.Windows.Forms.Panel();
             this.panel12 = new System.Windows.Forms.Panel();
-            this.skinControl4 = new technicontrol.Visualization.SkinControl();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
-            this.sC_Anwenden = new technicontrol.Visualization.SkinControl();
-            this.panel2 = new Grafikeditor14.Controls.CanvasPanel();
+            this.sC_B_Schriftart = new technicontrol.Visualization.SkinControl();
+            this.rTB_schriftart = new System.Windows.Forms.RichTextBox();
+            this.gB_Modi = new System.Windows.Forms.GroupBox();
+            this.sC_B_NeuFelErz_Anw = new technicontrol.Visualization.SkinControl();
             this.tableLayoutPanel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -130,6 +133,7 @@
             this.panel5.SuspendLayout();
             this.panel10.SuspendLayout();
             this.panel12.SuspendLayout();
+            this.gB_Modi.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -210,7 +214,9 @@
             // dateiToolStripMenuItem
             // 
             this.dateiToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.beendenToolStripMenuItem});
+            this.beendenToolStripMenuItem,
+            this.toolStripMenuItem6_layout_laden,
+            this.toolStripMenuItem6_layoutordner_öffnen});
             this.dateiToolStripMenuItem.Name = "dateiToolStripMenuItem";
             this.dateiToolStripMenuItem.Size = new System.Drawing.Size(46, 19);
             this.dateiToolStripMenuItem.Text = "Datei";
@@ -218,9 +224,23 @@
             // beendenToolStripMenuItem
             // 
             this.beendenToolStripMenuItem.Name = "beendenToolStripMenuItem";
-            this.beendenToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            this.beendenToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.beendenToolStripMenuItem.Text = "Beenden";
             this.beendenToolStripMenuItem.Click += new System.EventHandler(this.beendenToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem6_layout_laden
+            // 
+            this.toolStripMenuItem6_layout_laden.Name = "toolStripMenuItem6_layout_laden";
+            this.toolStripMenuItem6_layout_laden.Size = new System.Drawing.Size(187, 22);
+            this.toolStripMenuItem6_layout_laden.Text = "Layout/Ansicht laden";
+            this.toolStripMenuItem6_layout_laden.Click += new System.EventHandler(this.mnuLayoutLaden_Click);
+            // 
+            // toolStripMenuItem6_layoutordner_öffnen
+            // 
+            this.toolStripMenuItem6_layoutordner_öffnen.Name = "toolStripMenuItem6_layoutordner_öffnen";
+            this.toolStripMenuItem6_layoutordner_öffnen.Size = new System.Drawing.Size(187, 22);
+            this.toolStripMenuItem6_layoutordner_öffnen.Text = "Layoutordner öffnen";
+            this.toolStripMenuItem6_layoutordner_öffnen.Click += new System.EventHandler(this.mnuExplorer_Click);
             // 
             // tabControl1
             // 
@@ -256,6 +276,20 @@
             this.panel1.Padding = new System.Windows.Forms.Padding(3);
             this.panel1.Size = new System.Drawing.Size(1146, 319);
             this.panel1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Black;
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.RasterAbstand = 10;
+            this.panel2.RasterAktiv = false;
+            this.panel2.RasterFarbe = System.Drawing.Color.LightGray;
+            this.panel2.Size = new System.Drawing.Size(1140, 313);
+            this.panel2.TabIndex = 0;
+            this.panel2.SizeChanged += new System.EventHandler(this.panel2_SizeChanged);
+            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
             // 
             // tabPage2
             // 
@@ -309,10 +343,10 @@
             this.toolStripSeparator4,
             this.toolStripDropDownButton2,
             this.toolStripSeparator1,
-            this.toolStripButton_NeuesFeldErzeugen,
-            this.toolStripSeparator3,
             this.toolStripButton_ToggleLabelPanel,
-            this.toolStripSeparator2});
+            this.toolStripSeparator3,
+            this.toolStripStatusLabelMode,
+            this.toolStripSeparator6});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1194, 25);
@@ -434,21 +468,6 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton_NeuesFeldErzeugen
-            // 
-            this.toolStripButton_NeuesFeldErzeugen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton_NeuesFeldErzeugen.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_NeuesFeldErzeugen.Image")));
-            this.toolStripButton_NeuesFeldErzeugen.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_NeuesFeldErzeugen.Name = "toolStripButton_NeuesFeldErzeugen";
-            this.toolStripButton_NeuesFeldErzeugen.Size = new System.Drawing.Size(120, 22);
-            this.toolStripButton_NeuesFeldErzeugen.Text = "Neues Feld erzeugen";
-            this.toolStripButton_NeuesFeldErzeugen.Click += new System.EventHandler(this.toolStripButton_NeuesFeldErzeugen_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
             // toolStripButton_ToggleLabelPanel
             // 
             this.toolStripButton_ToggleLabelPanel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -459,17 +478,29 @@
             this.toolStripButton_ToggleLabelPanel.Text = "Toggle Label / Panel";
             this.toolStripButton_ToggleLabelPanel.Click += new System.EventHandler(this.toolStripButton_ToggleLabelPanel_Click);
             // 
-            // toolStripSeparator2
+            // toolStripSeparator3
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripStatusLabelMode
+            // 
+            this.toolStripStatusLabelMode.BackColor = System.Drawing.SystemColors.Control;
+            this.toolStripStatusLabelMode.Name = "toolStripStatusLabelMode";
+            this.toolStripStatusLabelMode.Size = new System.Drawing.Size(98, 22);
+            this.toolStripStatusLabelMode.Text = "Modus: Erzeugen";
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.ColumnCount = 4;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.32997F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.75421F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.29966F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34.59596F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.20539F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 36.78451F));
             this.tableLayoutPanel3.Controls.Add(this.skinControl8, 3, 0);
             this.tableLayoutPanel3.Controls.Add(this.groupBox3, 2, 0);
@@ -560,7 +591,7 @@
             // 
             this.richTextBox7.Location = new System.Drawing.Point(3, 135);
             this.richTextBox7.Name = "richTextBox7";
-            this.richTextBox7.Size = new System.Drawing.Size(395, 277);
+            this.richTextBox7.Size = new System.Drawing.Size(395, 278);
             this.richTextBox7.TabIndex = 4;
             this.richTextBox7.Text = "";
             // 
@@ -568,60 +599,60 @@
             // 
             this.groupBox3.Controls.Add(this.flowLayoutPanel5);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox3.Location = new System.Drawing.Point(596, 3);
+            this.groupBox3.Location = new System.Drawing.Point(608, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(151, 467);
+            this.groupBox3.Size = new System.Drawing.Size(139, 467);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Textanordnung";
             // 
             // flowLayoutPanel5
             // 
-            this.flowLayoutPanel5.Controls.Add(this.radioButton1);
-            this.flowLayoutPanel5.Controls.Add(this.radioButton2);
-            this.flowLayoutPanel5.Controls.Add(this.radioButton3);
+            this.flowLayoutPanel5.Controls.Add(this.radioButton_linksbündig);
+            this.flowLayoutPanel5.Controls.Add(this.radioButton_zentriert);
+            this.flowLayoutPanel5.Controls.Add(this.radioButton_rechtsbündig);
             this.flowLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel5.Location = new System.Drawing.Point(3, 22);
             this.flowLayoutPanel5.Name = "flowLayoutPanel5";
-            this.flowLayoutPanel5.Size = new System.Drawing.Size(145, 442);
+            this.flowLayoutPanel5.Size = new System.Drawing.Size(133, 442);
             this.flowLayoutPanel5.TabIndex = 0;
             // 
-            // radioButton1
+            // radioButton_linksbündig
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(3, 3);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(110, 22);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Linksbündig";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+            this.radioButton_linksbündig.AutoSize = true;
+            this.radioButton_linksbündig.Location = new System.Drawing.Point(3, 3);
+            this.radioButton_linksbündig.Name = "radioButton_linksbündig";
+            this.radioButton_linksbündig.Size = new System.Drawing.Size(110, 22);
+            this.radioButton_linksbündig.TabIndex = 0;
+            this.radioButton_linksbündig.TabStop = true;
+            this.radioButton_linksbündig.Text = "Linksbündig";
+            this.radioButton_linksbündig.UseVisualStyleBackColor = true;
+            this.radioButton_linksbündig.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
             // 
-            // radioButton2
+            // radioButton_zentriert
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Checked = true;
-            this.radioButton2.Location = new System.Drawing.Point(3, 31);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(83, 22);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Zentriert";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+            this.radioButton_zentriert.AutoSize = true;
+            this.radioButton_zentriert.Checked = true;
+            this.radioButton_zentriert.Location = new System.Drawing.Point(3, 31);
+            this.radioButton_zentriert.Name = "radioButton_zentriert";
+            this.radioButton_zentriert.Size = new System.Drawing.Size(83, 22);
+            this.radioButton_zentriert.TabIndex = 1;
+            this.radioButton_zentriert.TabStop = true;
+            this.radioButton_zentriert.Text = "Zentriert";
+            this.radioButton_zentriert.UseVisualStyleBackColor = true;
+            this.radioButton_zentriert.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
             // 
-            // radioButton3
+            // radioButton_rechtsbündig
             // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(3, 59);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(121, 22);
-            this.radioButton3.TabIndex = 2;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "Rechtsbündig";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+            this.radioButton_rechtsbündig.AutoSize = true;
+            this.radioButton_rechtsbündig.Location = new System.Drawing.Point(3, 59);
+            this.radioButton_rechtsbündig.Name = "radioButton_rechtsbündig";
+            this.radioButton_rechtsbündig.Size = new System.Drawing.Size(121, 22);
+            this.radioButton_rechtsbündig.TabIndex = 2;
+            this.radioButton_rechtsbündig.TabStop = true;
+            this.radioButton_rechtsbündig.Text = "Rechtsbündig";
+            this.radioButton_rechtsbündig.UseVisualStyleBackColor = true;
+            this.radioButton_rechtsbündig.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
             // 
             // groupBox5
             // 
@@ -629,43 +660,44 @@
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox5.Location = new System.Drawing.Point(3, 3);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(187, 467);
+            this.groupBox5.Size = new System.Drawing.Size(188, 467);
             this.groupBox5.TabIndex = 4;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Ansichten";
             // 
             // flowLayoutPanel3
             // 
-            this.flowLayoutPanel3.Controls.Add(this.skinControl5);
+            this.flowLayoutPanel3.Controls.Add(this.sC_B_ansichauswahl);
             this.flowLayoutPanel3.Controls.Add(this.label3);
-            this.flowLayoutPanel3.Controls.Add(this.comboBox2);
+            this.flowLayoutPanel3.Controls.Add(this.comboBox2_ansicht);
             this.flowLayoutPanel3.Controls.Add(this.panel6);
-            this.flowLayoutPanel3.Controls.Add(this.skinControl6);
+            this.flowLayoutPanel3.Controls.Add(this.sC_B_ansichtSpeichernFür);
             this.flowLayoutPanel3.Controls.Add(this.label4);
-            this.flowLayoutPanel3.Controls.Add(this.comboBox3);
+            this.flowLayoutPanel3.Controls.Add(this.comboBox3_ansichtSpeichern);
             this.flowLayoutPanel3.Controls.Add(this.sC_B_Speichern);
             this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 22);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(181, 442);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(182, 442);
             this.flowLayoutPanel3.TabIndex = 0;
             // 
-            // skinControl5
+            // sC_B_ansichauswahl
             // 
-            this.skinControl5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.sC_B_ansichauswahl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.skinControl5.AutoSize = false;
-            this.skinControl5.BackColor = System.Drawing.Color.Transparent;
-            this.skinControl5.Checked = false;
-            this.skinControl5.ForeColor = System.Drawing.Color.White;
-            this.skinControl5.Frame = 2;
-            this.skinControl5.Location = new System.Drawing.Point(3, 3);
-            this.skinControl5.Name = "skinControl5";
-            this.skinControl5.Size = new System.Drawing.Size(179, 48);
-            this.skinControl5.SkinName = "Button Gloss 02.04";
-            this.skinControl5.TabIndex = 0;
-            this.skinControl5.Text = "Ansichtauswahl";
-            this.skinControl5.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_ansichauswahl.AutoSize = false;
+            this.sC_B_ansichauswahl.BackColor = System.Drawing.Color.Transparent;
+            this.sC_B_ansichauswahl.Checked = false;
+            this.sC_B_ansichauswahl.ForeColor = System.Drawing.Color.White;
+            this.sC_B_ansichauswahl.Frame = 2;
+            this.sC_B_ansichauswahl.Location = new System.Drawing.Point(3, 3);
+            this.sC_B_ansichauswahl.Name = "sC_B_ansichauswahl";
+            this.sC_B_ansichauswahl.Size = new System.Drawing.Size(179, 48);
+            this.sC_B_ansichauswahl.SkinName = "Button Gloss 02.04";
+            this.sC_B_ansichauswahl.TabIndex = 0;
+            this.sC_B_ansichauswahl.Text = "Ansichtauswahl";
+            this.sC_B_ansichauswahl.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_ansichauswahl.Click += new System.EventHandler(this.sC_B_ansichauswahl_Click);
             // 
             // label3
             // 
@@ -678,15 +710,17 @@
             this.label3.Text = "Ansicht";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // comboBox2
+            // comboBox2_ansicht
             // 
-            this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.comboBox2_ansicht.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(3, 84);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(179, 26);
-            this.comboBox2.TabIndex = 2;
+            this.comboBox2_ansicht.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2_ansicht.FormattingEnabled = true;
+            this.comboBox2_ansicht.Location = new System.Drawing.Point(3, 84);
+            this.comboBox2_ansicht.Name = "comboBox2_ansicht";
+            this.comboBox2_ansicht.Size = new System.Drawing.Size(179, 26);
+            this.comboBox2_ansicht.TabIndex = 2;
+            this.comboBox2_ansicht.DropDown += new System.EventHandler(this.comboBox2_ansicht_DropDown);
             // 
             // panel6
             // 
@@ -697,22 +731,23 @@
             this.panel6.Size = new System.Drawing.Size(179, 13);
             this.panel6.TabIndex = 3;
             // 
-            // skinControl6
+            // sC_B_ansichtSpeichernFür
             // 
-            this.skinControl6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.sC_B_ansichtSpeichernFür.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.skinControl6.AutoSize = false;
-            this.skinControl6.BackColor = System.Drawing.Color.Transparent;
-            this.skinControl6.Checked = false;
-            this.skinControl6.ForeColor = System.Drawing.Color.White;
-            this.skinControl6.Frame = 2;
-            this.skinControl6.Location = new System.Drawing.Point(3, 135);
-            this.skinControl6.Name = "skinControl6";
-            this.skinControl6.Size = new System.Drawing.Size(179, 48);
-            this.skinControl6.SkinName = "Button Gloss 02.04";
-            this.skinControl6.TabIndex = 3;
-            this.skinControl6.Text = "Ansicht speichern für";
-            this.skinControl6.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_ansichtSpeichernFür.AutoSize = false;
+            this.sC_B_ansichtSpeichernFür.BackColor = System.Drawing.Color.Transparent;
+            this.sC_B_ansichtSpeichernFür.Checked = false;
+            this.sC_B_ansichtSpeichernFür.ForeColor = System.Drawing.Color.White;
+            this.sC_B_ansichtSpeichernFür.Frame = 2;
+            this.sC_B_ansichtSpeichernFür.Location = new System.Drawing.Point(3, 135);
+            this.sC_B_ansichtSpeichernFür.Name = "sC_B_ansichtSpeichernFür";
+            this.sC_B_ansichtSpeichernFür.Size = new System.Drawing.Size(179, 48);
+            this.sC_B_ansichtSpeichernFür.SkinName = "Button Gloss 02.04";
+            this.sC_B_ansichtSpeichernFür.TabIndex = 3;
+            this.sC_B_ansichtSpeichernFür.Text = "Ansicht speichern für";
+            this.sC_B_ansichtSpeichernFür.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_ansichtSpeichernFür.Click += new System.EventHandler(this.sC_B_ansichtSpeichernFür_Click);
             // 
             // label4
             // 
@@ -725,15 +760,17 @@
             this.label4.Text = "Ansicht";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // comboBox3
+            // comboBox3_ansichtSpeichern
             // 
-            this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.comboBox3_ansichtSpeichern.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(3, 216);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(179, 26);
-            this.comboBox3.TabIndex = 5;
+            this.comboBox3_ansichtSpeichern.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox3_ansichtSpeichern.FormattingEnabled = true;
+            this.comboBox3_ansichtSpeichern.Location = new System.Drawing.Point(3, 216);
+            this.comboBox3_ansichtSpeichern.Name = "comboBox3_ansichtSpeichern";
+            this.comboBox3_ansichtSpeichern.Size = new System.Drawing.Size(179, 26);
+            this.comboBox3_ansichtSpeichern.Sorted = true;
+            this.comboBox3_ansichtSpeichern.TabIndex = 5;
             // 
             // sC_B_Speichern
             // 
@@ -757,11 +794,11 @@
             // 
             this.flowLayoutPanel4.Controls.Add(this.groupBox1);
             this.flowLayoutPanel4.Controls.Add(this.groupBox2);
-            this.flowLayoutPanel4.Controls.Add(this.sC_Anwenden);
+            this.flowLayoutPanel4.Controls.Add(this.gB_Modi);
             this.flowLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(196, 3);
+            this.flowLayoutPanel4.Location = new System.Drawing.Point(197, 3);
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(394, 467);
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(405, 467);
             this.flowLayoutPanel4.TabIndex = 5;
             // 
             // groupBox1
@@ -769,7 +806,7 @@
             this.groupBox1.Controls.Add(this.flowLayoutPanel1);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(397, 182);
+            this.groupBox1.Size = new System.Drawing.Size(381, 148);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Feldinhalt";
@@ -779,11 +816,11 @@
             this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Controls.Add(this.comboBox1);
             this.flowLayoutPanel1.Controls.Add(this.label2);
-            this.flowLayoutPanel1.Controls.Add(this.richTextBox1);
+            this.flowLayoutPanel1.Controls.Add(this.rTB_vorgabetext);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 22);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(391, 157);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(375, 123);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -792,7 +829,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(282, 27);
+            this.label1.Size = new System.Drawing.Size(126, 22);
             this.label1.TabIndex = 0;
             this.label1.Text = "Auftragsmerkmal";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -802,81 +839,9 @@
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "*AB03300_B Anzahl Schweissungen",
-            "",
-            "*AB03300_B Schweissung 01 Position",
-            "",
-            "*AB03300_B Schweissung 01 Werkzeug",
-            "",
-            "*AB03300_B Schweissung 02 Position",
-            "",
-            "*AB03300_B Schweissung 02 Werkzeug",
-            "",
-            "*AB03300_B Schweissung 03 Position",
-            "",
-            "*AB03300_B Schweissung 03 Werkzeug",
-            "",
-            "*AB03300_B Schweissung 04 Position",
-            "",
-            "*AB03300_B Schweissung 04 Werkzeug",
-            "",
-            "*AB03300_B Schweissung 05 Position",
-            "",
-            "*AB03300_Bodeneinstand",
-            "",
-            "*AB03300_S Anzahl Schweissungen",
-            "",
-            "*AB03300_S Schweissung 01 Position",
-            "",
-            "*AB03300_S Schweissung 01 Werkzeug",
-            "",
-            "*AB03300_S Schweissung 02 Position",
-            "",
-            "*AB03300_S Schweissung 02 Werkzeug",
-            "",
-            "*AB03300_S Schweissung 03 Position",
-            "",
-            "*AB03300_S Schweissung 03 Werkzeug",
-            "",
-            "*AB03300_S Schweissung 04 Position",
-            "",
-            "*AB03300_S Schweissung 04 Werkzeug",
-            "",
-            "*AB03300_S Schweissung 05 Position",
-            "",
-            "*AB03300_S Schweissung 05 Werkzeug",
-            "",
-            "*AB03310_Ausschleusen",
-            "",
-            "*AB03310_B Schweissung 05 Werkzeug",
-            "",
-            "Blechoberflaeche",
-            "",
-            "BRB",
-            "",
-            "BRH",
-            "",
-            "DIN",
-            "",
-            "Einreicher",
-            "",
-            "Falzmassbreite",
-            "",
-            "Falzmasshoehe",
-            "",
-            "Freigabe",
-            "",
-            "Rest",
-            "",
-            "Soll",
-            "",
-            "Werkauftrag",
-            "",
-            "_Kommentarfeld"});
-            this.comboBox1.Location = new System.Drawing.Point(3, 30);
+            this.comboBox1.Location = new System.Drawing.Point(3, 25);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(388, 26);
+            this.comboBox1.Size = new System.Drawing.Size(369, 26);
             this.comboBox1.TabIndex = 1;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -884,31 +849,32 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.Location = new System.Drawing.Point(3, 59);
+            this.label2.Location = new System.Drawing.Point(3, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(282, 27);
+            this.label2.Size = new System.Drawing.Size(94, 24);
             this.label2.TabIndex = 2;
             this.label2.Text = "Vorgabetext";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // richTextBox1
+            // rTB_vorgabetext
             // 
-            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.rTB_vorgabetext.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox1.Location = new System.Drawing.Point(3, 89);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(388, 27);
-            this.richTextBox1.TabIndex = 3;
-            this.richTextBox1.Text = "Neues Feld";
+            this.rTB_vorgabetext.Location = new System.Drawing.Point(3, 81);
+            this.rTB_vorgabetext.Name = "rTB_vorgabetext";
+            this.rTB_vorgabetext.Size = new System.Drawing.Size(369, 27);
+            this.rTB_vorgabetext.TabIndex = 3;
+            this.rTB_vorgabetext.Text = "";
+            this.rTB_vorgabetext.TextChanged += new System.EventHandler(this.rTB_vorgabetext_TextChanged);
             // 
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.flowLayoutPanel2);
-            this.groupBox2.Location = new System.Drawing.Point(3, 191);
+            this.groupBox2.Location = new System.Drawing.Point(3, 157);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(397, 182);
+            this.groupBox2.Size = new System.Drawing.Size(381, 191);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Farbe und Schriftart";
@@ -918,148 +884,148 @@
             this.flowLayoutPanel2.Controls.Add(this.panel5);
             this.flowLayoutPanel2.Controls.Add(this.panel10);
             this.flowLayoutPanel2.Controls.Add(this.panel12);
-            this.flowLayoutPanel2.Controls.Add(this.richTextBox2);
+            this.flowLayoutPanel2.Controls.Add(this.rTB_schriftart);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 22);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(391, 157);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(375, 166);
             this.flowLayoutPanel2.TabIndex = 0;
             // 
             // panel5
             // 
             this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel5.Controls.Add(this.panel3);
-            this.panel5.Controls.Add(this.skinControl2);
+            this.panel5.Controls.Add(this.p_hintergrundfarbe);
+            this.panel5.Controls.Add(this.sC_B_hintergrundfarbe);
             this.panel5.Location = new System.Drawing.Point(3, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(388, 33);
+            this.panel5.Size = new System.Drawing.Size(369, 33);
             this.panel5.TabIndex = 6;
             // 
-            // panel3
+            // p_hintergrundfarbe
             // 
-            this.panel3.BackColor = System.Drawing.Color.Black;
-            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel3.Location = new System.Drawing.Point(160, 3);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(27, 27);
-            this.panel3.TabIndex = 1;
+            this.p_hintergrundfarbe.BackColor = System.Drawing.SystemColors.Control;
+            this.p_hintergrundfarbe.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.p_hintergrundfarbe.Location = new System.Drawing.Point(160, 3);
+            this.p_hintergrundfarbe.Name = "p_hintergrundfarbe";
+            this.p_hintergrundfarbe.Size = new System.Drawing.Size(27, 27);
+            this.p_hintergrundfarbe.TabIndex = 1;
             // 
-            // skinControl2
+            // sC_B_hintergrundfarbe
             // 
-            this.skinControl2.AutoSize = false;
-            this.skinControl2.BackColor = System.Drawing.Color.Transparent;
-            this.skinControl2.Checked = false;
-            this.skinControl2.ForeColor = System.Drawing.Color.White;
-            this.skinControl2.Frame = 2;
-            this.skinControl2.Location = new System.Drawing.Point(3, 3);
-            this.skinControl2.Name = "skinControl2";
-            this.skinControl2.Size = new System.Drawing.Size(151, 27);
-            this.skinControl2.SkinName = "Button Gloss Black 01";
-            this.skinControl2.TabIndex = 0;
-            this.skinControl2.Text = "Hintergrundfarbe";
-            this.skinControl2.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_hintergrundfarbe.AutoSize = false;
+            this.sC_B_hintergrundfarbe.BackColor = System.Drawing.Color.Transparent;
+            this.sC_B_hintergrundfarbe.Checked = false;
+            this.sC_B_hintergrundfarbe.ForeColor = System.Drawing.Color.White;
+            this.sC_B_hintergrundfarbe.Frame = 2;
+            this.sC_B_hintergrundfarbe.Location = new System.Drawing.Point(3, 3);
+            this.sC_B_hintergrundfarbe.Name = "sC_B_hintergrundfarbe";
+            this.sC_B_hintergrundfarbe.Size = new System.Drawing.Size(151, 27);
+            this.sC_B_hintergrundfarbe.SkinName = "Button Gloss Black 01";
+            this.sC_B_hintergrundfarbe.TabIndex = 0;
+            this.sC_B_hintergrundfarbe.Text = "Hintergrundfarbe";
+            this.sC_B_hintergrundfarbe.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_hintergrundfarbe.Click += new System.EventHandler(this.sC_B_hintergrundfarbe_Click);
             // 
             // panel10
             // 
             this.panel10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel10.Controls.Add(this.skinControl3);
-            this.panel10.Controls.Add(this.panel4);
+            this.panel10.Controls.Add(this.sC_B_textfarbe);
+            this.panel10.Controls.Add(this.p_textfarbe);
             this.panel10.Location = new System.Drawing.Point(3, 42);
             this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(391, 33);
+            this.panel10.Size = new System.Drawing.Size(369, 33);
             this.panel10.TabIndex = 7;
             // 
-            // skinControl3
+            // sC_B_textfarbe
             // 
-            this.skinControl3.AutoSize = false;
-            this.skinControl3.BackColor = System.Drawing.Color.Transparent;
-            this.skinControl3.Checked = false;
-            this.skinControl3.ForeColor = System.Drawing.Color.White;
-            this.skinControl3.Frame = 2;
-            this.skinControl3.Location = new System.Drawing.Point(3, 3);
-            this.skinControl3.Name = "skinControl3";
-            this.skinControl3.Size = new System.Drawing.Size(151, 27);
-            this.skinControl3.SkinName = "Button Gloss Black 01";
-            this.skinControl3.TabIndex = 2;
-            this.skinControl3.Text = "Textfarbe";
-            this.skinControl3.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_textfarbe.AutoSize = false;
+            this.sC_B_textfarbe.BackColor = System.Drawing.Color.Transparent;
+            this.sC_B_textfarbe.Checked = false;
+            this.sC_B_textfarbe.ForeColor = System.Drawing.Color.White;
+            this.sC_B_textfarbe.Frame = 2;
+            this.sC_B_textfarbe.Location = new System.Drawing.Point(3, 3);
+            this.sC_B_textfarbe.Name = "sC_B_textfarbe";
+            this.sC_B_textfarbe.Size = new System.Drawing.Size(151, 27);
+            this.sC_B_textfarbe.SkinName = "Button Gloss Black 01";
+            this.sC_B_textfarbe.TabIndex = 2;
+            this.sC_B_textfarbe.Text = "Textfarbe";
+            this.sC_B_textfarbe.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_textfarbe.Click += new System.EventHandler(this.sC_B_textfarbe_Click);
             // 
-            // panel4
+            // p_textfarbe
             // 
-            this.panel4.BackColor = System.Drawing.Color.Black;
-            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel4.Location = new System.Drawing.Point(160, 3);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(27, 27);
-            this.panel4.TabIndex = 3;
+            this.p_textfarbe.BackColor = System.Drawing.Color.Black;
+            this.p_textfarbe.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.p_textfarbe.Location = new System.Drawing.Point(160, 3);
+            this.p_textfarbe.Name = "p_textfarbe";
+            this.p_textfarbe.Size = new System.Drawing.Size(27, 27);
+            this.p_textfarbe.TabIndex = 3;
             // 
             // panel12
             // 
             this.panel12.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel12.Controls.Add(this.skinControl4);
+            this.panel12.Controls.Add(this.sC_B_Schriftart);
             this.panel12.Location = new System.Drawing.Point(3, 81);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(391, 33);
+            this.panel12.Size = new System.Drawing.Size(369, 33);
             this.panel12.TabIndex = 8;
             // 
-            // skinControl4
+            // sC_B_Schriftart
             // 
-            this.skinControl4.AutoSize = false;
-            this.skinControl4.BackColor = System.Drawing.Color.Transparent;
-            this.skinControl4.Checked = false;
-            this.skinControl4.ForeColor = System.Drawing.Color.White;
-            this.skinControl4.Frame = 2;
-            this.skinControl4.Location = new System.Drawing.Point(3, 3);
-            this.skinControl4.Name = "skinControl4";
-            this.skinControl4.Size = new System.Drawing.Size(151, 27);
-            this.skinControl4.SkinName = "Button Gloss Black 01";
-            this.skinControl4.TabIndex = 4;
-            this.skinControl4.Text = "Schriftart";
-            this.skinControl4.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_Schriftart.AutoSize = false;
+            this.sC_B_Schriftart.BackColor = System.Drawing.Color.Transparent;
+            this.sC_B_Schriftart.Checked = false;
+            this.sC_B_Schriftart.ForeColor = System.Drawing.Color.White;
+            this.sC_B_Schriftart.Frame = 2;
+            this.sC_B_Schriftart.Location = new System.Drawing.Point(3, 3);
+            this.sC_B_Schriftart.Name = "sC_B_Schriftart";
+            this.sC_B_Schriftart.Size = new System.Drawing.Size(151, 27);
+            this.sC_B_Schriftart.SkinName = "Button Gloss Black 01";
+            this.sC_B_Schriftart.TabIndex = 4;
+            this.sC_B_Schriftart.Text = "Schriftart";
+            this.sC_B_Schriftart.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_Schriftart.Click += new System.EventHandler(this.sC_B_Schriftart_Click);
             // 
-            // richTextBox2
+            // rTB_schriftart
             // 
-            this.richTextBox2.Location = new System.Drawing.Point(3, 120);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(391, 30);
-            this.richTextBox2.TabIndex = 5;
-            this.richTextBox2.Text = "Arial, 12, Bold";
+            this.rTB_schriftart.Location = new System.Drawing.Point(3, 120);
+            this.rTB_schriftart.Name = "rTB_schriftart";
+            this.rTB_schriftart.Size = new System.Drawing.Size(369, 30);
+            this.rTB_schriftart.TabIndex = 5;
+            this.rTB_schriftart.Text = "Arial, 12, Bold";
             // 
-            // sC_Anwenden
+            // gB_Modi
             // 
-            this.sC_Anwenden.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.gB_Modi.Controls.Add(this.sC_B_NeuFelErz_Anw);
+            this.gB_Modi.Location = new System.Drawing.Point(3, 354);
+            this.gB_Modi.Name = "gB_Modi";
+            this.gB_Modi.Size = new System.Drawing.Size(390, 110);
+            this.gB_Modi.TabIndex = 10;
+            this.gB_Modi.TabStop = false;
+            this.gB_Modi.Text = "Modi";
+            // 
+            // sC_B_NeuFelErz_Anw
+            // 
+            this.sC_B_NeuFelErz_Anw.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.sC_Anwenden.AutoSize = false;
-            this.sC_Anwenden.BackColor = System.Drawing.Color.Transparent;
-            this.sC_Anwenden.Checked = false;
-            this.sC_Anwenden.ForeColor = System.Drawing.Color.White;
-            this.sC_Anwenden.Frame = 2;
-            this.sC_Anwenden.Location = new System.Drawing.Point(3, 379);
-            this.sC_Anwenden.Name = "sC_Anwenden";
-            this.sC_Anwenden.Size = new System.Drawing.Size(391, 38);
-            this.sC_Anwenden.SkinName = "Button Gloss 02.04";
-            this.sC_Anwenden.TabIndex = 9;
-            this.sC_Anwenden.Text = "Auf ausgewähltem Feld anwenden";
-            this.sC_Anwenden.TextPadding = new System.Windows.Forms.Padding(0);
-            this.sC_Anwenden.Click += new System.EventHandler(this.sC_Anwenden_Click);
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Black;
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.RasterAbstand = 10;
-            this.panel2.RasterAktiv = false;
-            this.panel2.RasterFarbe = System.Drawing.Color.LightGray;
-            this.panel2.Size = new System.Drawing.Size(1140, 313);
-            this.panel2.TabIndex = 0;
-            this.panel2.SizeChanged += new System.EventHandler(this.panel2_SizeChanged);
-            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
+            this.sC_B_NeuFelErz_Anw.AutoSize = false;
+            this.sC_B_NeuFelErz_Anw.BackColor = System.Drawing.Color.Transparent;
+            this.sC_B_NeuFelErz_Anw.Checked = false;
+            this.sC_B_NeuFelErz_Anw.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sC_B_NeuFelErz_Anw.ForeColor = System.Drawing.Color.White;
+            this.sC_B_NeuFelErz_Anw.Frame = 2;
+            this.sC_B_NeuFelErz_Anw.Location = new System.Drawing.Point(6, 23);
+            this.sC_B_NeuFelErz_Anw.Name = "sC_B_NeuFelErz_Anw";
+            this.sC_B_NeuFelErz_Anw.Size = new System.Drawing.Size(182, 32);
+            this.sC_B_NeuFelErz_Anw.SkinName = "Button Gloss 02.04";
+            this.sC_B_NeuFelErz_Anw.TabIndex = 10;
+            this.sC_B_NeuFelErz_Anw.Text = "Neues Feld erzeugen";
+            this.sC_B_NeuFelErz_Anw.TextPadding = new System.Windows.Forms.Padding(0);
+            this.sC_B_NeuFelErz_Anw.Click += new System.EventHandler(this.sC_B_NeuFelErz_Anw_Click);
             // 
             // Form1
             // 
@@ -1106,6 +1072,7 @@
             this.panel5.ResumeLayout(false);
             this.panel10.ResumeLayout(false);
             this.panel12.ResumeLayout(false);
+            this.gB_Modi.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1140,11 +1107,9 @@
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox3;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemOK_Rastergröße;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSchließen_Rastergröße;
-        private System.Windows.Forms.ToolStripButton toolStripButton_NeuesFeldErzeugen;
         private System.Windows.Forms.ToolStripButton toolStripButton_ToggleLabelPanel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
@@ -1156,30 +1121,30 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
-        private technicontrol.Visualization.SkinControl skinControl5;
+        private technicontrol.Visualization.SkinControl sC_B_ansichauswahl;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox comboBox2_ansicht;
         private System.Windows.Forms.Panel panel6;
-        private technicontrol.Visualization.SkinControl skinControl6;
+        private technicontrol.Visualization.SkinControl sC_B_ansichtSpeichernFür;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.ComboBox comboBox3_ansichtSpeichern;
         private technicontrol.Visualization.SkinControl sC_B_Speichern;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox rTB_vorgabetext;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Panel panel3;
-        private technicontrol.Visualization.SkinControl skinControl2;
+        private System.Windows.Forms.Panel p_hintergrundfarbe;
+        private technicontrol.Visualization.SkinControl sC_B_hintergrundfarbe;
         private System.Windows.Forms.Panel panel10;
-        private technicontrol.Visualization.SkinControl skinControl3;
-        private System.Windows.Forms.Panel panel4;
+        private technicontrol.Visualization.SkinControl sC_B_textfarbe;
+        private System.Windows.Forms.Panel p_textfarbe;
         private System.Windows.Forms.Panel panel12;
-        private technicontrol.Visualization.SkinControl skinControl4;
-        private System.Windows.Forms.RichTextBox richTextBox2;
+        private technicontrol.Visualization.SkinControl sC_B_Schriftart;
+        private System.Windows.Forms.RichTextBox rTB_schriftart;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.RadioButton radioButton_linksbündig;
+        private System.Windows.Forms.RadioButton radioButton_zentriert;
+        private System.Windows.Forms.RadioButton radioButton_rechtsbündig;
         private technicontrol.Visualization.SkinControl skinControl8;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
         private System.Windows.Forms.RichTextBox richTextBox3;
@@ -1189,7 +1154,12 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.RichTextBox richTextBox7;
-        private technicontrol.Visualization.SkinControl sC_Anwenden;
+        private System.Windows.Forms.ToolStripLabel toolStripStatusLabelMode;
+        private System.Windows.Forms.GroupBox gB_Modi;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private technicontrol.Visualization.SkinControl sC_B_NeuFelErz_Anw;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6_layout_laden;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6_layoutordner_öffnen;
     }
 }
 
