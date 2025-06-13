@@ -118,6 +118,8 @@ namespace Grafikeditor14
                 grip.BringToFront();
                 grip.Visible = true; // sicherstellen!
             }
+
+            CenterPanelInTabPage();
         }
 
         // -------------------------------------------------------- L O A D -----------------------------------------
@@ -214,29 +216,63 @@ namespace Grafikeditor14
 
         #region Anzeigezeile
         
+        //private void CenterPanelInTabPage()
+        //{
+        //    if (tabPage1 == null || panel1 == null)
+        //        return;
+
+        //    int x, y;
+
+        //    bool horizontalScrollVisible = tabPage1.HorizontalScroll.Visible;
+
+        //    if (horizontalScrollVisible)
+        //    {
+        //        x = 0;
+        //    }
+        //    else
+        //    {
+        //        x = (tabPage1.ClientSize.Width - panel1.Width) / 2;
+        //    }
+
+        //    bool verticalScrollVisible = tabPage1.VerticalScroll.Visible;
+
+        //    if (verticalScrollVisible)
+        //    {
+        //        y = 0;
+        //    }
+        //    else
+        //    {
+        //        y = (tabPage1.ClientSize.Height - panel1.Height) / 2;
+        //    }
+
+        //    panel1.Location = new Point(x, y);
+        //}
+
         private void CenterPanelInTabPage()
         {
             if (tabPage1 == null || panel1 == null)
                 return;
 
+            int padding = 20;
             int x, y;
 
             bool horizontalScrollVisible = tabPage1.HorizontalScroll.Visible;
+            bool verticalScrollVisible = tabPage1.VerticalScroll.Visible;
 
+            // Horizontal
             if (horizontalScrollVisible)
             {
-                x = 0;
+                x = padding; // statt 0
             }
             else
             {
                 x = (tabPage1.ClientSize.Width - panel1.Width) / 2;
             }
 
-            bool verticalScrollVisible = tabPage1.VerticalScroll.Visible;
-
+            // Vertikal
             if (verticalScrollVisible)
             {
-                y = 0;
+                y = padding; // statt 0
             }
             else
             {
@@ -245,6 +281,7 @@ namespace Grafikeditor14
 
             panel1.Location = new Point(x, y);
         }
+
         #endregion
 
         
