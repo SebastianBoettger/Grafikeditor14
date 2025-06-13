@@ -39,9 +39,11 @@
             this.beendenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6_layout_laden = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6_layoutordner_öffnen = new System.Windows.Forms.ToolStripMenuItem();
+            this.neuToolStripMenuItem_Neu = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new Grafikeditor14.Controls.CanvasPanel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -64,8 +66,6 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_ToggleLabelPanel = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripStatusLabelMode = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.skinControl8 = new technicontrol.Visualization.SkinControl();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
@@ -81,13 +81,13 @@
             this.radioButton_rechtsbündig = new System.Windows.Forms.RadioButton();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.sC_B_ansichauswahl = new technicontrol.Visualization.SkinControl();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBox2_ansicht = new System.Windows.Forms.ComboBox();
+            this.sC_B_ansichauswahl = new technicontrol.Visualization.SkinControl();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.sC_B_ansichtSpeichernFür = new technicontrol.Visualization.SkinControl();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox3_ansichtSpeichern = new System.Windows.Forms.ComboBox();
+            this.sC_B_ansichtSpeichernFür = new technicontrol.Visualization.SkinControl();
             this.sC_B_Speichern = new technicontrol.Visualization.SkinControl();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -109,7 +109,6 @@
             this.rTB_schriftart = new System.Windows.Forms.RichTextBox();
             this.gB_Modi = new System.Windows.Forms.GroupBox();
             this.sC_B_NeuFelErz_Anw = new technicontrol.Visualization.SkinControl();
-            this.panel2 = new Grafikeditor14.Controls.CanvasPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -216,7 +215,8 @@
             this.dateiToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.beendenToolStripMenuItem,
             this.toolStripMenuItem6_layout_laden,
-            this.toolStripMenuItem6_layoutordner_öffnen});
+            this.toolStripMenuItem6_layoutordner_öffnen,
+            this.neuToolStripMenuItem_Neu});
             this.dateiToolStripMenuItem.Name = "dateiToolStripMenuItem";
             this.dateiToolStripMenuItem.Size = new System.Drawing.Size(46, 19);
             this.dateiToolStripMenuItem.Text = "Datei";
@@ -241,6 +241,13 @@
             this.toolStripMenuItem6_layoutordner_öffnen.Size = new System.Drawing.Size(187, 22);
             this.toolStripMenuItem6_layoutordner_öffnen.Text = "Layoutordner öffnen";
             this.toolStripMenuItem6_layoutordner_öffnen.Click += new System.EventHandler(this.mnuExplorer_Click);
+            // 
+            // neuToolStripMenuItem_Neu
+            // 
+            this.neuToolStripMenuItem_Neu.Name = "neuToolStripMenuItem_Neu";
+            this.neuToolStripMenuItem_Neu.Size = new System.Drawing.Size(187, 22);
+            this.neuToolStripMenuItem_Neu.Text = "Neu";
+            this.neuToolStripMenuItem_Neu.Click += new System.EventHandler(this.neuToolStripMenuItem_Neu_Click);
             // 
             // tabControl1
             // 
@@ -276,6 +283,20 @@
             this.panel1.Padding = new System.Windows.Forms.Padding(3);
             this.panel1.Size = new System.Drawing.Size(1146, 319);
             this.panel1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Black;
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.RasterAbstand = 10;
+            this.panel2.RasterAktiv = false;
+            this.panel2.RasterFarbe = System.Drawing.Color.LightGray;
+            this.panel2.Size = new System.Drawing.Size(1140, 313);
+            this.panel2.TabIndex = 0;
+            this.panel2.SizeChanged += new System.EventHandler(this.panel2_SizeChanged);
+            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
             // 
             // tabPage2
             // 
@@ -330,9 +351,7 @@
             this.toolStripDropDownButton2,
             this.toolStripSeparator1,
             this.toolStripButton_ToggleLabelPanel,
-            this.toolStripSeparator3,
-            this.toolStripStatusLabelMode,
-            this.toolStripSeparator6});
+            this.toolStripSeparator3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1194, 25);
@@ -468,18 +487,6 @@
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripStatusLabelMode
-            // 
-            this.toolStripStatusLabelMode.BackColor = System.Drawing.SystemColors.Control;
-            this.toolStripStatusLabelMode.Name = "toolStripStatusLabelMode";
-            this.toolStripStatusLabelMode.Size = new System.Drawing.Size(98, 22);
-            this.toolStripStatusLabelMode.Text = "Modus: Erzeugen";
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
             // tableLayoutPanel3
             // 
@@ -653,19 +660,42 @@
             // 
             // flowLayoutPanel3
             // 
-            this.flowLayoutPanel3.Controls.Add(this.sC_B_ansichauswahl);
             this.flowLayoutPanel3.Controls.Add(this.label3);
             this.flowLayoutPanel3.Controls.Add(this.comboBox2_ansicht);
+            this.flowLayoutPanel3.Controls.Add(this.sC_B_ansichauswahl);
             this.flowLayoutPanel3.Controls.Add(this.panel6);
-            this.flowLayoutPanel3.Controls.Add(this.sC_B_ansichtSpeichernFür);
             this.flowLayoutPanel3.Controls.Add(this.label4);
             this.flowLayoutPanel3.Controls.Add(this.comboBox3_ansichtSpeichern);
+            this.flowLayoutPanel3.Controls.Add(this.sC_B_ansichtSpeichernFür);
             this.flowLayoutPanel3.Controls.Add(this.sC_B_Speichern);
             this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 22);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
             this.flowLayoutPanel3.Size = new System.Drawing.Size(182, 442);
             this.flowLayoutPanel3.TabIndex = 0;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.Location = new System.Drawing.Point(3, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(179, 27);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Ansicht anzeigen";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comboBox2_ansicht
+            // 
+            this.comboBox2_ansicht.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox2_ansicht.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2_ansicht.FormattingEnabled = true;
+            this.comboBox2_ansicht.Location = new System.Drawing.Point(3, 30);
+            this.comboBox2_ansicht.Name = "comboBox2_ansicht";
+            this.comboBox2_ansicht.Size = new System.Drawing.Size(179, 26);
+            this.comboBox2_ansicht.TabIndex = 2;
+            this.comboBox2_ansicht.DropDown += new System.EventHandler(this.comboBox2_ansicht_DropDown);
             // 
             // sC_B_ansichauswahl
             // 
@@ -676,7 +706,7 @@
             this.sC_B_ansichauswahl.Checked = false;
             this.sC_B_ansichauswahl.ForeColor = System.Drawing.Color.White;
             this.sC_B_ansichauswahl.Frame = 2;
-            this.sC_B_ansichauswahl.Location = new System.Drawing.Point(3, 3);
+            this.sC_B_ansichauswahl.Location = new System.Drawing.Point(3, 62);
             this.sC_B_ansichauswahl.Name = "sC_B_ansichauswahl";
             this.sC_B_ansichauswahl.Size = new System.Drawing.Size(179, 48);
             this.sC_B_ansichauswahl.SkinName = "Button Gloss 02.04";
@@ -684,29 +714,6 @@
             this.sC_B_ansichauswahl.Text = "Ansichtauswahl";
             this.sC_B_ansichauswahl.TextPadding = new System.Windows.Forms.Padding(0);
             this.sC_B_ansichauswahl.Click += new System.EventHandler(this.sC_B_ansichauswahl_Click);
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.Location = new System.Drawing.Point(3, 54);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(179, 27);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Ansicht";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comboBox2_ansicht
-            // 
-            this.comboBox2_ansicht.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox2_ansicht.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2_ansicht.FormattingEnabled = true;
-            this.comboBox2_ansicht.Location = new System.Drawing.Point(3, 84);
-            this.comboBox2_ansicht.Name = "comboBox2_ansicht";
-            this.comboBox2_ansicht.Size = new System.Drawing.Size(179, 26);
-            this.comboBox2_ansicht.TabIndex = 2;
-            this.comboBox2_ansicht.DropDown += new System.EventHandler(this.comboBox2_ansicht_DropDown);
             // 
             // panel6
             // 
@@ -717,6 +724,29 @@
             this.panel6.Size = new System.Drawing.Size(179, 13);
             this.panel6.TabIndex = 3;
             // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.Location = new System.Drawing.Point(3, 132);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(179, 27);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Ansicht speichern";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comboBox3_ansichtSpeichern
+            // 
+            this.comboBox3_ansichtSpeichern.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox3_ansichtSpeichern.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox3_ansichtSpeichern.FormattingEnabled = true;
+            this.comboBox3_ansichtSpeichern.Location = new System.Drawing.Point(3, 162);
+            this.comboBox3_ansichtSpeichern.Name = "comboBox3_ansichtSpeichern";
+            this.comboBox3_ansichtSpeichern.Size = new System.Drawing.Size(179, 26);
+            this.comboBox3_ansichtSpeichern.Sorted = true;
+            this.comboBox3_ansichtSpeichern.TabIndex = 5;
+            // 
             // sC_B_ansichtSpeichernFür
             // 
             this.sC_B_ansichtSpeichernFür.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -726,7 +756,7 @@
             this.sC_B_ansichtSpeichernFür.Checked = false;
             this.sC_B_ansichtSpeichernFür.ForeColor = System.Drawing.Color.White;
             this.sC_B_ansichtSpeichernFür.Frame = 2;
-            this.sC_B_ansichtSpeichernFür.Location = new System.Drawing.Point(3, 135);
+            this.sC_B_ansichtSpeichernFür.Location = new System.Drawing.Point(3, 194);
             this.sC_B_ansichtSpeichernFür.Name = "sC_B_ansichtSpeichernFür";
             this.sC_B_ansichtSpeichernFür.Size = new System.Drawing.Size(179, 48);
             this.sC_B_ansichtSpeichernFür.SkinName = "Button Gloss 02.04";
@@ -734,29 +764,6 @@
             this.sC_B_ansichtSpeichernFür.Text = "Ansicht speichern für";
             this.sC_B_ansichtSpeichernFür.TextPadding = new System.Windows.Forms.Padding(0);
             this.sC_B_ansichtSpeichernFür.Click += new System.EventHandler(this.sC_B_ansichtSpeichernFür_Click);
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.Location = new System.Drawing.Point(3, 186);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(179, 27);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Ansicht";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comboBox3_ansichtSpeichern
-            // 
-            this.comboBox3_ansichtSpeichern.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox3_ansichtSpeichern.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox3_ansichtSpeichern.FormattingEnabled = true;
-            this.comboBox3_ansichtSpeichern.Location = new System.Drawing.Point(3, 216);
-            this.comboBox3_ansichtSpeichern.Name = "comboBox3_ansichtSpeichern";
-            this.comboBox3_ansichtSpeichern.Size = new System.Drawing.Size(179, 26);
-            this.comboBox3_ansichtSpeichern.Sorted = true;
-            this.comboBox3_ansichtSpeichern.TabIndex = 5;
             // 
             // sC_B_Speichern
             // 
@@ -1085,20 +1092,6 @@
             this.sC_B_NeuFelErz_Anw.TextPadding = new System.Windows.Forms.Padding(0);
             this.sC_B_NeuFelErz_Anw.Click += new System.EventHandler(this.sC_B_NeuFelErz_Anw_Click);
             // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Black;
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.RasterAbstand = 10;
-            this.panel2.RasterAktiv = false;
-            this.panel2.RasterFarbe = System.Drawing.Color.LightGray;
-            this.panel2.Size = new System.Drawing.Size(1140, 313);
-            this.panel2.TabIndex = 0;
-            this.panel2.SizeChanged += new System.EventHandler(this.panel2_SizeChanged);
-            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -1226,12 +1219,11 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.RichTextBox richTextBox7;
-        private System.Windows.Forms.ToolStripLabel toolStripStatusLabelMode;
         private System.Windows.Forms.GroupBox gB_Modi;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private technicontrol.Visualization.SkinControl sC_B_NeuFelErz_Anw;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6_layout_laden;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6_layoutordner_öffnen;
+        private System.Windows.Forms.ToolStripMenuItem neuToolStripMenuItem_Neu;
     }
 }
 

@@ -29,13 +29,13 @@ namespace Grafikeditor14
 
         private readonly UndoRedoManager _undoMgr = new UndoRedoManager();
         private readonly EditorState _state = new EditorState();
-        private readonly List<Control> _selection = new List<Control>();
+        //private readonly List<Control> _selection = new List<Control>();
         private readonly PendingFieldProps _pending = new PendingFieldProps();
         private readonly FontDialog _fontDlg = new FontDialog();
         private bool _suspendTagUpdates = false;
         private readonly string _layoutDir =
             System.IO.Path.Combine(Application.StartupPath, "Layouts");
-        private Rectangle _prevHighlight = Rectangle.Empty;
+        //private Rectangle _prevHighlight = Rectangle.Empty;
         Panel scrollPaddingPanel;
 
         private CanvasPanel canvas
@@ -149,8 +149,10 @@ namespace Grafikeditor14
                 BackColor = Color.Transparent
             };
             tabPage1.Controls.Add(scrollPaddingPanel);
+            tabPage1.AutoScroll = false;
             tabPage1.AutoScroll = true;
-            tabPage1.AutoScrollMargin = new Size(20, 20); // 🔧 Neuer Abstandspuffer
+            tabPage1.AutoScrollMargin = new Size(0, 0); // Verhindert künstliche Zusatzränder
+            //tabPage1.AutoScrollMargin = new Size(20, 20); // 🔧 Neuer Abstandspuffer
 
             CenterPanelInTabPage();
             toolStripDropDownButton2.DropDown.AutoClose = false;
@@ -186,8 +188,9 @@ namespace Grafikeditor14
             panel2.Controls.Add(highlightBorder);
             EnsureHighlightBorder();
 
-            toolStripStatusLabel1.Text = panel1.Location.X.ToString() + " " + panel1.Location.Y.ToString() +
-                                          "  " + panel1.Width.ToString() + " " + panel1.Height.ToString();
+            toolStripStatusLabel1.Text = panel2.Width.ToString() + " " + panel2.Height.ToString() +
+                                          "  " + panel1.Width.ToString() + " " + panel1.Height.ToString() +
+                                          "  " + tabPage1.Width.ToString() + " " + tabPage1.Height.ToString();
 
             // ===============================
             // NEU: Resize-Grip direkt zur Form hinzufügen
@@ -214,77 +217,6 @@ namespace Grafikeditor14
         }
         #endregion
 
-        #region Anzeigezeile
-        
-        //private void CenterPanelInTabPage()
-        //{
-        //    if (tabPage1 == null || panel1 == null)
-        //        return;
-
-        //    int x, y;
-
-        //    bool horizontalScrollVisible = tabPage1.HorizontalScroll.Visible;
-
-        //    if (horizontalScrollVisible)
-        //    {
-        //        x = 0;
-        //    }
-        //    else
-        //    {
-        //        x = (tabPage1.ClientSize.Width - panel1.Width) / 2;
-        //    }
-
-        //    bool verticalScrollVisible = tabPage1.VerticalScroll.Visible;
-
-        //    if (verticalScrollVisible)
-        //    {
-        //        y = 0;
-        //    }
-        //    else
-        //    {
-        //        y = (tabPage1.ClientSize.Height - panel1.Height) / 2;
-        //    }
-
-        //    panel1.Location = new Point(x, y);
-        //}
-
-        private void CenterPanelInTabPage()
-        {
-            if (tabPage1 == null || panel1 == null)
-                return;
-
-            int padding = 20;
-            int x, y;
-
-            bool horizontalScrollVisible = tabPage1.HorizontalScroll.Visible;
-            bool verticalScrollVisible = tabPage1.VerticalScroll.Visible;
-
-            // Horizontal
-            if (horizontalScrollVisible)
-            {
-                x = padding; // statt 0
-            }
-            else
-            {
-                x = (tabPage1.ClientSize.Width - panel1.Width) / 2;
-            }
-
-            // Vertikal
-            if (verticalScrollVisible)
-            {
-                y = padding; // statt 0
-            }
-            else
-            {
-                y = (tabPage1.ClientSize.Height - panel1.Height) / 2;
-            }
-
-            panel1.Location = new Point(x, y);
-        }
-
-        #endregion
-
-        
         List<int> zwischenspeicher_differenz = new List<int>();
         private void toolStripMenuItemOK_Panelgröße_Click(object sender, EventArgs e)
         {
@@ -292,93 +224,6 @@ namespace Grafikeditor14
             zwischenspeicher_differenz.Add(Convert.ToInt32(toolStripTextBox2.Text) - panel2.Height);
             panel2.Width = Convert.ToInt32(toolStripTextBox1.Text);
             panel2.Height = Convert.ToInt32(toolStripTextBox2.Text);
-        }
-
-        private readonly int minFormHeight = 1000;
-        private readonly int safetyMargin = 5;
-        private void panel2_SizeChanged(object sender, EventArgs e)
-        {
-            int padding = 20;
-
-            // Größe von panel1 anpassen – mit kleinem Rand (+6 = Rahmen)
-            panel1.Width = panel2.Width + 6;
-            panel1.Height = panel2.Height + 6;
-            panel1.Location = new Point(padding, padding); // Abstand links/oben
-
-            // Dynamische Höhen- und Breitenanpassung
-            if (zwischenspeicher_differenz.Count == 2)
-            {
-                int diffWidth = zwischenspeicher_differenz[0];
-                int diffHeight = zwischenspeicher_differenz[1];
-
-                Rectangle wa = Screen.FromHandle(this.Handle).WorkingArea;
-
-                // === Höhe vergrößern ===
-                if (diffHeight > 0 && panel2.Height >= 313)
-                {
-                    int desiredHeight = this.Height + diffHeight;
-                    int screenMaxH = wa.Height - (2 * safetyMargin);
-                    this.Height = Math.Min(Math.Max(desiredHeight, minFormHeight), screenMaxH);
-
-                    int maxRow2 = screenMaxH - 598;
-                    tableLayoutPanel1.RowStyles[2].Height =
-                        Math.Min(tableLayoutPanel1.RowStyles[2].Height + diffHeight, maxRow2);
-
-                    tabControl1.Height += diffHeight;
-                }
-
-                // === Höhe verkleinern ===
-                if (diffHeight < 0 && panel2.Height >= 313)
-                {
-                    if (tabPage1.Height > panel1.Height - 40)
-                    {
-                        int diff = tabPage1.Height - (panel1.Height - 40);
-
-                        this.Height -= diff;
-                        tableLayoutPanel1.RowStyles[2].Height -= diff;
-                        tabControl1.Height -= diff;
-                        tabPage1.Height -= diff;
-                    }
-                }
-
-                // === Breite vergrößern ===
-                if (diffWidth > 0)
-                {
-                    int desiredWidth = this.Width + diffWidth;
-                    int screenMaxW = wa.Width - (2 * safetyMargin);
-                    this.Width = Math.Min(desiredWidth, screenMaxW);
-                }
-
-                // === Breite verkleinern ===
-                if (diffWidth < 0)
-                {
-                    int newWidth = this.Width + diffWidth;
-                    int minWidth = 1000; // Mindestbreite sinnvoll anpassen
-                    int screenMaxW = wa.Width - (2 * safetyMargin);
-                    this.Width = Math.Max(Math.Min(newWidth, screenMaxW), minWidth);
-                }
-
-                // Fenster zentrieren
-                int newX = (wa.Width - this.Width) / 2;
-                int newY = (wa.Height - this.Height) / 2;
-                this.Location = new Point(newX, newY);
-
-                zwischenspeicher_differenz.Clear();
-            }
-
-            // Scrollverhalten absichern
-            tabPage1.AutoScroll = true;
-            tabPage1.AutoScrollMargin = new Size(padding, padding);
-            tabPage1.AutoScrollPosition = new Point(0, 0); // Reset zwingend
-
-            // Scrollgrenze unten/rechts korrekt setzen (nicht zu viel!)
-            scrollPaddingPanel.Location = new Point(panel2.Right + 6 + padding, panel2.Bottom + 6 + padding);
-
-            // Status
-            toolStripStatusLabel2.Text = string.Format(
-                "panel2: {0} x {1}  panel1: {2} x {3}",
-                panel2.Width, panel2.Height, panel1.Width, panel1.Height
-            );
         }
 
         // Raster
@@ -454,7 +299,7 @@ namespace Grafikeditor14
             lead.Top = e.Y + lead.Top - _mouseDownLocationL.Y;
 
             UpdatePosTagAndDisplay(lead);   // Tag live anpassen
-            RefreshHighlight();             // 🔴 Rahmen mitschieben
+            AktualisiereHighlightRahmen();             // 🔴 Rahmen mitschieben
         }
 
         private void FeldInPanel_MouseUp(object sender, MouseEventArgs e)
@@ -467,7 +312,7 @@ namespace Grafikeditor14
             lead.Location = snapped;
 
             UpdatePosTagAndDisplay(lead);
-            RefreshHighlight();            // 🔴 Endposition anzeigen
+            AktualisiereHighlightRahmen();            // 🔴 Endposition anzeigen
         }
 
         private Point SnapToGrid(Point position)
@@ -576,27 +421,27 @@ namespace Grafikeditor14
 
         }
 
-        private Panel highlightBorder;
-        private void ZeigeHighlightUm(Control ctrl)
-        {
-            if (ctrl == null || ctrl.Parent != panel2)
-            {
-                highlightBorder.Visible = false;
-                return;
-            }
+        //private Panel highlightBorder;
+        //private void ZeigeHighlightUm(Control ctrl)
+        //{
+        //    if (ctrl == null || ctrl.Parent != panel2)
+        //    {
+        //        highlightBorder.Visible = false;
+        //        return;
+        //    }
 
-            highlightBorder.Bounds = new Rectangle(
-                ctrl.Left - 2,
-                ctrl.Top - 2,
-                ctrl.Width + 4,
-                ctrl.Height + 4);
+        //    highlightBorder.Bounds = new Rectangle(
+        //        ctrl.Left - 2,
+        //        ctrl.Top - 2,
+        //        ctrl.Width + 4,
+        //        ctrl.Height + 4);
 
-            highlightBorder.Visible = true;
+        //    highlightBorder.Visible = true;
 
-            ///* erst das Feld, dann nochmals den Rahmen nach vorn holen */
-            //ctrl.BringToFront();
-            //highlightBorder.BringToFront();
-        }
+        //    ///* erst das Feld, dann nochmals den Rahmen nach vorn holen */
+        //    //ctrl.BringToFront();
+        //    //highlightBorder.BringToFront();
+        //}
 
         private void panel2_MouseDown(object sender, MouseEventArgs e)
         {
@@ -604,74 +449,74 @@ namespace Grafikeditor14
                 ClearSelection();
         }
 
-        private string GeneriereNeuenFeldnamen()
-        {
-            int maxNummer = 0;
+        //private string GeneriereNeuenFeldnamen()
+        //{
+        //    int maxNummer = 0;
 
-            foreach (Control ctrl in panel2.Controls)
-            {
-                if (ctrl.Name.StartsWith("Feld"))
-                {
-                    string nummerTeil = ctrl.Name.Substring(4);
-                    int nummer;
-                    if (int.TryParse(nummerTeil, out nummer))
-                    {
-                        if (nummer > maxNummer)
-                            maxNummer = nummer;
-                    }
-                }
-            }
+        //    foreach (Control ctrl in panel2.Controls)
+        //    {
+        //        if (ctrl.Name.StartsWith("Feld"))
+        //        {
+        //            string nummerTeil = ctrl.Name.Substring(4);
+        //            int nummer;
+        //            if (int.TryParse(nummerTeil, out nummer))
+        //            {
+        //                if (nummer > maxNummer)
+        //                    maxNummer = nummer;
+        //            }
+        //        }
+        //    }
 
-            return "Feld" + (maxNummer + 1);
-        }
+        //    return "Feld" + (maxNummer + 1);
+        //}
 
-        private void DupliziereFeld(Control original)
-        {
-            if (original == null || original.Parent != panel2) return;
+        //private void DupliziereFeld(Control original)
+        //{
+        //    if (original == null || original.Parent != panel2) return;
 
-            Control copy;
+        //    Control copy;
 
-            if (original is Label)
-            {
-                Label s = (Label)original;
-                copy = new Label
-                {
-                    Text = s.Text,
-                    Font = (Font)s.Font.Clone(),
-                    Size = s.Size,
-                    BackColor = s.BackColor,
-                    BorderStyle = s.BorderStyle,
-                    ForeColor = s.ForeColor,
-                    TextAlign = s.TextAlign,
-                    AutoSize = false
-                };
-            }
-            else if (original is Panel)
-            {
-                Panel s = (Panel)original;
-                copy = new Panel
-                {
-                    Size = s.Size,
-                    BackColor = s.BackColor,
-                    BorderStyle = s.BorderStyle
-                };
-            }
-            else return;
+        //    if (original is Label)
+        //    {
+        //        Label s = (Label)original;
+        //        copy = new Label
+        //        {
+        //            Text = s.Text,
+        //            Font = (Font)s.Font.Clone(),
+        //            Size = s.Size,
+        //            BackColor = s.BackColor,
+        //            BorderStyle = s.BorderStyle,
+        //            ForeColor = s.ForeColor,
+        //            TextAlign = s.TextAlign,
+        //            AutoSize = false
+        //        };
+        //    }
+        //    else if (original is Panel)
+        //    {
+        //        Panel s = (Panel)original;
+        //        copy = new Panel
+        //        {
+        //            Size = s.Size,
+        //            BackColor = s.BackColor,
+        //            BorderStyle = s.BorderStyle
+        //        };
+        //    }
+        //    else return;
 
-            copy.Name = GeneriereNeuenFeldnamen();
-            copy.Location = new Point(original.Left + 10, original.Top + 10);
-            copy.Tag = BuildTagArray(copy, "");
+        //    copy.Name = GeneriereNeuenFeldnamen();
+        //    copy.Location = new Point(original.Left + 10, original.Top + 10);
+        //    copy.Tag = BuildTagArray(copy, "");
 
-            /* Events */
-            copy.MouseDown += FeldInPanel_MouseDown;
-            copy.MouseMove += FeldInPanel_MouseMove;
-            copy.MouseUp += FeldInPanel_MouseUp;
-            copy.Click += NeuesFeld_Click;
+        //    /* Events */
+        //    copy.MouseDown += FeldInPanel_MouseDown;
+        //    copy.MouseMove += FeldInPanel_MouseMove;
+        //    copy.MouseUp += FeldInPanel_MouseUp;
+        //    copy.Click += NeuesFeld_Click;
 
-            panel2.Controls.Add(copy);
-            ClearSelection();
-            AddToSelection(copy);           // Highlight + Tag-Sync
-        }
+        //    panel2.Controls.Add(copy);
+        //    ClearSelection();
+        //    AddToSelection(copy);           // Highlight + Tag-Sync
+        //}
 
         private void radioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -779,18 +624,18 @@ namespace Grafikeditor14
             return tag;
         }
 
-        private void FeldInPanel_DoubleClick(object sender, EventArgs e)
-        {
-            Control clicked = sender as Control;
+        //private void FeldInPanel_DoubleClick(object sender, EventArgs e)
+        //{
+        //    Control clicked = sender as Control;
 
-            if (clicked != null && clicked == _state.ActiveControl)
-            {
-                _state.ActiveControl = null;
-                highlightBorder.Visible = false;
-                richTextBox7.Clear();
-                toolStripStatusLabel2.Text = "";
-            }
-        }
+        //    if (clicked != null && clicked == _state.ActiveControl)
+        //    {
+        //        _state.ActiveControl = null;
+        //        highlightBorder.Visible = false;
+        //        richTextBox7.Clear();
+        //        toolStripStatusLabel2.Text = "";
+        //    }
+        //}
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -816,38 +661,38 @@ namespace Grafikeditor14
             return true;
         }
 
-        private void VerarbeiteResize(int dxSign, int dySign)
-        {
-            int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
+        //private void VerarbeiteResize(int dxSign, int dySign)
+        //{
+        //    int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
 
-            foreach (Control c in _selection)
-            {
-                Size ziel = new Size(
-                    Math.Max(5, c.Width + dxSign * step),
-                    Math.Max(5, c.Height + dySign * step));
+        //    foreach (Control c in _selection)
+        //    {
+        //        Size ziel = new Size(
+        //            Math.Max(5, c.Width + dxSign * step),
+        //            Math.Max(5, c.Height + dySign * step));
 
-                _undoMgr.Do(new ResizeCommand(c, ziel));
-                UpdateSizeTagAndDisplay(c);             // Tag aktualisieren
-            }
-            RefreshHighlight();                         // 🔴 Rahmen neu zeichnen
-        }
+        //        _undoMgr.Do(new ResizeCommand(c, ziel));
+        //        UpdateSizeTagAndDisplay(c);             // Tag aktualisieren
+        //    }
+        //    AktualisiereHighlightRahmen();                         // 🔴 Rahmen neu zeichnen
+        //}
 
-        private void VerarbeiteMove(int dxSign, int dySign)
-        {
-            int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
+        //private void VerarbeiteMove(int dxSign, int dySign)
+        //{
+        //    int step = _state.RasterAktiv ? _state.RasterAbstand : 1;
 
-            foreach (Control c in _selection)
-            {
-                Point ziel = new Point(c.Left + dxSign * step,
-                                       c.Top + dySign * step);
+        //    foreach (Control c in _selection)
+        //    {
+        //        Point ziel = new Point(c.Left + dxSign * step,
+        //                               c.Top + dySign * step);
 
-                if (_state.RasterAktiv) ziel = SnapToGrid(ziel);
+        //        if (_state.RasterAktiv) ziel = SnapToGrid(ziel);
 
-                _undoMgr.Do(new MoveCommand(c, ziel));
-                UpdatePosTagAndDisplay(c);              // Tag anpassen
-            }
-            RefreshHighlight();                         // 🔴 Rahmen folgt
-        }
+        //        _undoMgr.Do(new MoveCommand(c, ziel));
+        //        UpdatePosTagAndDisplay(c);              // Tag anpassen
+        //    }
+        //    AktualisiereHighlightRahmen();                         // 🔴 Rahmen folgt
+        //}
 
         private void SetActive(Control ctrl)
         {
@@ -856,63 +701,63 @@ namespace Grafikeditor14
                 AddToSelection(ctrl);
         }
 
-        private void ClearSelection()
-        {
-            _selection.Clear();
-            _state.ActiveControl = null;
-            highlightBorder.Visible = false;
-            richTextBox7.Clear();
-        }
+        //private void ClearSelection()
+        //{
+        //    _selection.Clear();
+        //    _state.ActiveControl = null;
+        //    highlightBorder.Visible = false;
+        //    richTextBox7.Clear();
+        //}
 
-        private void RemoveFromSelection(Control ctrl)
-        {
-            _selection.Remove(ctrl);
-            if (_selection.Count == 0)
-                ClearSelection();
-            else
-            {
-                RefreshHighlight();
-                if (_selection.Count == 1)
-                    DisplayFieldProperties(_selection[0]);
-                else
-                    richTextBox7.Clear();
-            }
-        }
+        //private void RemoveFromSelection(Control ctrl)
+        //{
+        //    _selection.Remove(ctrl);
+        //    if (_selection.Count == 0)
+        //        ClearSelection();
+        //    else
+        //    {
+        //        AktualisiereHighlightRahmen();
+        //        if (_selection.Count == 1)
+        //            DisplayFieldProperties(_selection[0]);
+        //        else
+        //            richTextBox7.Clear();
+        //    }
+        //}
 
-        private void RefreshHighlight()
-        {
-            /* ---------- keine Selektion ---------- */
-            if (_selection.Count == 0)
-            {
-                if (highlightBorder.Visible)                   // alten Rahmen wegwischen
-                    panel2.Invalidate(_prevHighlight);
+        //private void AktualisiereHighlightRahmen()
+        //{
+        //    /* ---------- keine Selektion ---------- */
+        //    if (_selection.Count == 0)
+        //    {
+        //        if (highlightBorder.Visible)                   // alten Rahmen wegwischen
+        //            panel2.Invalidate(_prevHighlight);
 
-                highlightBorder.Visible = false;
-                _prevHighlight = Rectangle.Empty;
-                return;
-            }
+        //        highlightBorder.Visible = false;
+        //        _prevHighlight = Rectangle.Empty;
+        //        return;
+        //    }
 
-            /* ---------- Bounding-Rectangle berechnen ---------- */
-            Rectangle r = _selection[0].Bounds;
-            foreach (Control c in _selection.Skip(1))
-                r = Rectangle.Union(r, c.Bounds);
+        //    /* ---------- Bounding-Rectangle berechnen ---------- */
+        //    Rectangle r = _selection[0].Bounds;
+        //    foreach (Control c in _selection.Skip(1))
+        //        r = Rectangle.Union(r, c.Bounds);
 
-            r.Inflate(2, 2);          // 2-px Rahmenzugabe
+        //    r.Inflate(2, 2);          // 2-px Rahmenzugabe
 
-            /* ---------- alte Position löschen ---------- */
-            if (!_prevHighlight.IsEmpty)
-                panel2.Invalidate(_prevHighlight);
+        //    /* ---------- alte Position löschen ---------- */
+        //    if (!_prevHighlight.IsEmpty)
+        //        panel2.Invalidate(_prevHighlight);
 
-            /* ---------- neuen Rahmen setzen ---------- */
-            highlightBorder.Bounds = r;
-            highlightBorder.Visible = true;
+        //    /* ---------- neuen Rahmen setzen ---------- */
+        //    highlightBorder.Bounds = r;
+        //    highlightBorder.Visible = true;
 
-            // Reihenfolge: Rahmen direkt hinter der Lead-Control
-            highlightBorder.SendToBack();
-            _selection[0].BringToFront();
+        //    // Reihenfolge: Rahmen direkt hinter der Lead-Control
+        //    highlightBorder.SendToBack();
+        //    _selection[0].BringToFront();
 
-            _prevHighlight = r;       // neue Position merken
-        }
+        //    _prevHighlight = r;       // neue Position merken
+        //}
 
         /// <summary>
         /// Entfernt optionalen Prefix „DSFeldname=“.
@@ -925,17 +770,17 @@ namespace Grafikeditor14
                    : entry;
         }
 
-        private void AddToSelection(Control ctrl)
-        {
-            ClearSelection();
-            if (ctrl != null) _selection.Add(ctrl);
-            _state.ActiveControl = ctrl;
+        //private void AddToSelection(Control ctrl)
+        //{
+        //    ClearSelection();
+        //    if (ctrl != null) _selection.Add(ctrl);
+        //    _state.ActiveControl = ctrl;
 
-            RefreshHighlight();            // Rahmen berechnen
-            //highlightBorder.BringToFront(); // ← sicherheitshalber
+        //    AktualisiereHighlightRahmen();            // Rahmen berechnen
+        //    //highlightBorder.BringToFront(); // ← sicherheitshalber
 
-            SyncControlsAndTag(ctrl);
-        }
+        //    SyncControlsAndTag(ctrl);
+        //}
 
         private void Field_Click(object sender, EventArgs e)
         {
@@ -943,26 +788,26 @@ namespace Grafikeditor14
             if (field == null) return;
         }
 
-        private void SpeichereFeldStrukturAlsTXT(string pfad)
-        {
-            using (StreamWriter writer = new StreamWriter(pfad, false, Encoding.UTF8))
-            {
-                int index = 0;
-                foreach (Control ctrl in panel2.Controls)
-                {
-                    string[] tagArr = ctrl.Tag as string[];
-                    if (tagArr == null || tagArr.Length < 15) continue;
+        //private void SpeichereFeldStrukturAlsTXT(string pfad)
+        //{
+        //    using (StreamWriter writer = new StreamWriter(pfad, false, Encoding.UTF8))
+        //    {
+        //        int index = 0;
+        //        foreach (Control ctrl in panel2.Controls)
+        //        {
+        //            string[] tagArr = ctrl.Tag as string[];
+        //            if (tagArr == null || tagArr.Length < 15) continue;
 
-                    writer.WriteLine("[{0}]", index);
-                    foreach (string zeile in tagArr)
-                    {
-                        writer.WriteLine(zeile);
-                    }
-                    writer.WriteLine(); // Leerzeile zwischen Einträgen
-                    index++;
-                }
-            }
-        }
+        //            writer.WriteLine("[{0}]", index);
+        //            foreach (string zeile in tagArr)
+        //            {
+        //                writer.WriteLine(zeile);
+        //            }
+        //            writer.WriteLine(); // Leerzeile zwischen Einträgen
+        //            index++;
+        //        }
+        //    }
+        //}
 
         private void sC_B_Speichern_Click(object sender, EventArgs e)
         {
@@ -1037,7 +882,7 @@ namespace Grafikeditor14
 
             // Highlight & Properties-Anzeige neu zeichnen
             DisplayFieldProperties(ctrl);
-            RefreshHighlight();
+            AktualisiereHighlightRahmen();
         }
 
         private readonly ColorDialog _colorDlg = new ColorDialog();
@@ -1160,68 +1005,19 @@ namespace Grafikeditor14
 
         //private void sC_B_NeuFelErz_Anw_Click(object sender, EventArgs e)
         //{
-        //    /* eindeutigen Namen generieren */
         //    string newName = GeneriereNeuenFeldnamen();
-
-        //    /* Standard-Label erzeugen (keine Eingabe-Controls nötig) */
         //    Label lbl = FieldFactory.CreateDefaultLabel(panel2, newName);
 
-        //    /* Events verdrahten */
         //    lbl.MouseDown += FeldInPanel_MouseDown;
         //    lbl.MouseMove += FeldInPanel_MouseMove;
         //    lbl.MouseUp += FeldInPanel_MouseUp;
         //    lbl.Click += NeuesFeld_Click;
 
-        //    /* Auswahl / Highlight aktualisieren */
+        //    /* Auswahl + Highlight */
         //    ClearSelection();
-        //    AddToSelection(lbl);          //  ← sorgt für roten Rahmen + Tag-Sync
-
-        //    /* sicherstellen, dass es ganz oben liegt */
-        //    lbl.BringToFront();
-        //    highlightBorder.BringToFront();
+        //    AddToSelection(lbl);          // AktualisiereHighlightRahmen() wird dabei aufgerufen
+        //    // und setzt Z-Reihenfolge schon korrekt
         //}
-
-        //private void sC_B_NeuFelErz_Anw_Click(object sender, EventArgs e)
-        //{
-        //    /* eindeutigen Namen generieren */
-        //    string newName = GeneriereNeuenFeldnamen();
-
-        //    /* Standard-Label erzeugen (ohne Eingabefelder) */
-        //    Label lbl = FieldFactory.CreateDefaultLabel(panel2, newName);
-
-        //    /* Events anschließen */
-        //    lbl.MouseDown += FeldInPanel_MouseDown;
-        //    lbl.MouseMove += FeldInPanel_MouseMove;
-        //    lbl.MouseUp += FeldInPanel_MouseUp;
-        //    lbl.Click += NeuesFeld_Click;
-
-        //    /* Auswahl setzen  →  RefreshHighlight() läuft darin bereits einmal */
-        //    ClearSelection();
-        //    AddToSelection(lbl);
-
-        //    /* Z-Reihenfolge sicherstellen */
-        //    lbl.BringToFront();
-        //    highlightBorder.BringToFront();
-
-        //    /* <<< jetzt noch einmal exakt neu ausrichten */
-        //    RefreshHighlight();          // oder: ZeigeHighlightUm(lbl);
-        //}
-
-        private void sC_B_NeuFelErz_Anw_Click(object sender, EventArgs e)
-        {
-            string newName = GeneriereNeuenFeldnamen();
-            Label lbl = FieldFactory.CreateDefaultLabel(panel2, newName);
-
-            lbl.MouseDown += FeldInPanel_MouseDown;
-            lbl.MouseMove += FeldInPanel_MouseMove;
-            lbl.MouseUp += FeldInPanel_MouseUp;
-            lbl.Click += NeuesFeld_Click;
-
-            /* Auswahl + Highlight */
-            ClearSelection();
-            AddToSelection(lbl);          // RefreshHighlight() wird dabei aufgerufen
-            // und setzt Z-Reihenfolge schon korrekt
-        }
 
         /// <summary>
         /// Schreibt die aktuellen Left/Top-Koordinaten in das Tag-Array des Feldes
@@ -1765,38 +1561,38 @@ namespace Grafikeditor14
             return lbl;
         }
 
-        private void mnuLayoutLaden_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog dlg = new OpenFileDialog
-            {
-                Filter = "TXT-Dateien (*.txt)|*.txt",
-                InitialDirectory = _layoutDir
-            };
-            if (dlg.ShowDialog() != DialogResult.OK) return;
+        //private void mnuLayoutLaden_Click(object sender, EventArgs e)
+        //{
+        //    OpenFileDialog dlg = new OpenFileDialog
+        //    {
+        //        Filter = "TXT-Dateien (*.txt)|*.txt",
+        //        InitialDirectory = _layoutDir
+        //    };
+        //    if (dlg.ShowDialog() != DialogResult.OK) return;
 
-            panel2.Controls.Clear();
-            _selection.Clear();
-            EnsureHighlightBorder();
-            highlightBorder.Visible = false;
+        //    panel2.Controls.Clear();
+        //    _selection.Clear();
+        //    EnsureHighlightBorder();
+        //    highlightBorder.Visible = false;
 
-            try
-            {
-                LoadLayoutFromFile(dlg.FileName, panel2);
+        //    try
+        //    {
+        //        LoadLayoutFromFile(dlg.FileName, panel2);
 
-                if (panel2.Controls.Count > 0)
-                    AddToSelection(panel2.Controls[0]);
+        //        if (panel2.Controls.Count > 0)
+        //            AddToSelection(panel2.Controls[0]);
 
-                this.Text = "Grafikeditor – [" + Path.GetFileName(dlg.FileName) + "]";
+        //        this.Text = "Grafikeditor – [" + Path.GetFileName(dlg.FileName) + "]";
 
-                ResizeFormToFitLayout();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Laden fehlgeschlagen:\\n" + ex.Message,
-                                "Fehler", MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-            }
-        }
+        //        ResizeFormToFitLayout();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Laden fehlgeschlagen:\\n" + ex.Message,
+        //                        "Fehler", MessageBoxButtons.OK,
+        //                        MessageBoxIcon.Error);
+        //    }
+        //}
 
         private static string DictGet(Dictionary<string, string> dict, string key)
         {
@@ -1820,14 +1616,14 @@ namespace Grafikeditor14
                    : defaultColor;
         }
 
-        private void mnuExplorer_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                System.Diagnostics.Process.Start("explorer.exe", _layoutDir);
-            }
-            catch { }
-        }
+        //private void mnuExplorer_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        System.Diagnostics.Process.Start("explorer.exe", _layoutDir);
+        //    }
+        //    catch { }
+        //}
 
         private void PopulateLayoutCombo()
         {
@@ -1848,41 +1644,41 @@ namespace Grafikeditor14
             PopulateLayoutCombo();
         }
 
-        private void sC_B_ansichauswahl_Click(object sender, EventArgs e)
-        {
-            if (comboBox2_ansicht.SelectedItem == null)
-            {
-                MessageBox.Show("Bitte zuerst eine Ansicht wählen.",
-                                "Hinweis", MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                return;
-            }
+        //private void sC_B_ansichauswahl_Click(object sender, EventArgs e)
+        //{
+        //    if (comboBox2_ansicht.SelectedItem == null)
+        //    {
+        //        MessageBox.Show("Bitte zuerst eine Ansicht wählen.",
+        //                        "Hinweis", MessageBoxButtons.OK,
+        //                        MessageBoxIcon.Information);
+        //        return;
+        //    }
 
-            string fileName = comboBox2_ansicht.SelectedItem + ".txt";
-            string full = Path.Combine(_layoutDir, fileName);
+        //    string fileName = comboBox2_ansicht.SelectedItem + ".txt";
+        //    string full = Path.Combine(_layoutDir, fileName);
 
-            if (!File.Exists(full))
-            {
-                MessageBox.Show("Datei nicht gefunden:\\n" + full,
-                                "Fehler", MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                return;
-            }
+        //    if (!File.Exists(full))
+        //    {
+        //        MessageBox.Show("Datei nicht gefunden:\\n" + full,
+        //                        "Fehler", MessageBoxButtons.OK,
+        //                        MessageBoxIcon.Error);
+        //        return;
+        //    }
 
-            panel2.Controls.Clear();
-            _selection.Clear();
-            EnsureHighlightBorder();
-            highlightBorder.Visible = false;
+        //    panel2.Controls.Clear();
+        //    _selection.Clear();
+        //    EnsureHighlightBorder();
+        //    highlightBorder.Visible = false;
 
-            LoadLayoutFromFile(full, panel2);
+        //    LoadLayoutFromFile(full, panel2);
 
-            if (panel2.Controls.Count > 0)
-                AddToSelection(panel2.Controls[0]);
+        //    if (panel2.Controls.Count > 0)
+        //        AddToSelection(panel2.Controls[0]);
 
-            ResizeFormToFitLayout();
+        //    ResizeFormToFitLayout();
 
-            this.Text = "Grafikeditor – [" + fileName + "]";
-        }
+        //    this.Text = "Grafikeditor – [" + fileName + "]";
+        //}
 
         /// <summary>
         /// passt panel2 so an, dass alle enthaltenen Controls sichtbar sind
@@ -1902,22 +1698,100 @@ namespace Grafikeditor14
             CenterPanelInTabPage();
         }
 
+        private void sC_B_ansichauswahl_Click(object sender, EventArgs e)
+        {
+            if (comboBox2_ansicht.SelectedItem == null)
+            {
+                MessageBox.Show("Bitte zuerst eine Ansicht wählen.",
+                                "Hinweis", MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                return;
+            }
+
+            DialogResult result = MessageBox.Show(
+                "Möchten Sie das aktuelle Layout vor dem Laden speichern?",
+                "Layout speichern?",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel)
+                return;
+
+            if (result == DialogResult.Yes)
+            {
+                string name = comboBox3_ansichtSpeichern.SelectedItem as string;
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    name = name.Trim();
+                    if (!name.ToLowerInvariant().EndsWith(".txt"))
+                        name += ".txt";
+
+                    string fullPath = Path.Combine(_layoutDir, name);
+
+                    try
+                    {
+                        SpeichereFeldStrukturAlsTXT(fullPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Speichern fehlgeschlagen:\n" + ex.Message,
+                                        "Fehler", MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Kein gültiger Dateiname zum Speichern vorhanden.",
+                                    "Hinweis", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            string fileName = comboBox2_ansicht.SelectedItem + ".txt";
+            string full = Path.Combine(_layoutDir, fileName);
+
+            if (!File.Exists(full))
+            {
+                MessageBox.Show("Datei nicht gefunden:\n" + full,
+                                "Fehler", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                return;
+            }
+
+            // 🔄 Bestehende Felder löschen
+            panel2.Controls.Clear();
+            ClearSelection();               // Auswahl löschen
+            EnsureHighlightBorder();        // Rahmen wieder sicherstellen
+            highlightBorder.Visible = false;
+
+            LoadLayoutFromFile(full, panel2);
+
+            if (panel2.Controls.Count > 0)
+                AddToSelection(panel2.Controls[0]);
+
+            ResizeFormToFitLayout();
+            tabPage1.AutoScrollPosition = new Point(0, 0);
+            this.Text = "Grafikeditor – [" + fileName + "]";
+        }
+
         /// <summary>
         /// Stellt sicher, dass der rote Highlight-Rahmen im Canvas existiert.
         /// Wird er gelöscht (z. B. durch panel2.Controls.Clear),
         /// wird er automatisch neu hinzugefügt.
         /// </summary>
-        private void EnsureHighlightBorder()
-        {
-            if (highlightBorder == null || highlightBorder.IsDisposed)
-                return;                                  // wurde noch gar nicht erzeugt
+        //private void EnsureHighlightBorder()
+        //{
+        //    if (highlightBorder == null || highlightBorder.IsDisposed)
+        //        return;                                  // wurde noch gar nicht erzeugt
 
-            if (!panel2.Controls.Contains(highlightBorder))
-            {
-                panel2.Controls.Add(highlightBorder);
-                highlightBorder.SendToBack();            // zunächst hinter alles legen
-            }
-        }
+        //    if (!panel2.Controls.Contains(highlightBorder))
+        //    {
+        //        panel2.Controls.Add(highlightBorder);
+        //        highlightBorder.SendToBack();            // zunächst hinter alles legen
+        //    }
+        //}
 
         private void PopulateSpeicherCombo()
         {
@@ -1975,50 +1849,88 @@ namespace Grafikeditor14
             }
         }
 
-        private void ResizeFormToFitLayout()
+        private void neuToolStripMenuItem_Neu_Click(object sender, EventArgs e)
         {
-            int padding = 20;
-            int minWidth = 1200;
-            int minHeight = 1000;
-            int safetyMargin = 5;
-            int layoutOverheadWidth = 14;   // Differenz zwischen Form1 und tabPage1 (Form verliert Breite)
-            int layoutOverheadHeight = 10;  // Optional: z. B. durch Docking von tableLayoutPanel1
+            // 1. Abfrage: Speichern?
+            DialogResult result = MessageBox.Show(
+                "Möchten Sie das aktuelle Layout speichern, bevor ein neues begonnen wird?",
+                "Layout speichern?",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
 
-            // Bildschirmarbeitsfläche bestimmen (des aktuellen Monitors)
-            Rectangle wa = Screen.FromHandle(this.Handle).WorkingArea;
+            if (result == DialogResult.Cancel)
+                return;
 
-            // UI-Höhe berechnen: skinControl1 + menuStrip1 + toolStrip1 + statusStrip1
-            int uiHeight = skinControl1.Height + menuStrip1.Height + toolStrip1.Height + statusStrip1.Height;
+            if (result == DialogResult.Yes)
+            {
+                string name = comboBox3_ansichtSpeichern.SelectedItem as string;
 
-            // gewünschte Größen inkl. Rand und Korrekturfaktoren
-            int desiredWidth = panel1.Width + padding * 2 + layoutOverheadWidth;
-            int desiredHeight = panel1.Height + padding * 2 + uiHeight + layoutOverheadHeight;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    name = name.Trim();
+                    if (!name.ToLowerInvariant().EndsWith(".txt"))
+                        name += ".txt";
 
-            // Begrenzung auf Bildschirm und Mindestgröße
-            int maxWidth = wa.Width - (2 * safetyMargin);
-            int maxHeight = wa.Height - (2 * safetyMargin);
+                    string fullPath = Path.Combine(_layoutDir, name);
 
-            int finalWidth = Math.Min(Math.Max(desiredWidth, minWidth), maxWidth);
-            int finalHeight = Math.Min(Math.Max(desiredHeight, minHeight), maxHeight);
+                    try
+                    {
+                        SpeichereFeldStrukturAlsTXT(fullPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Speichern fehlgeschlagen:\n" + ex.Message,
+                                        "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Kein gültiger Dateiname zum Speichern vorhanden.",
+                                    "Hinweis", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
 
-            // Fenstergröße setzen
-            this.Width = finalWidth;
-            this.Height = finalHeight;
+            // 2. Layout zurücksetzen
+            panel2.Controls.Clear();              // Alle Felder entfernen
+            ClearSelection();                     // Auswahl und Rahmen löschen
+            EnsureHighlightBorder();              // Rahmen sicherstellen
+            highlightBorder.Visible = false;      // Sichtbarkeit zurücksetzen
 
-            // Fenster zentrieren auf aktuellem Bildschirm
-            this.Location = new Point(
-                wa.Left + (wa.Width - this.Width) / 2,
-                wa.Top + (wa.Height - this.Height) / 2
-            );
+            // 3. panel2-Größe auf Standardgröße setzen
+            panel2.Width = 1140;
+            panel2.Height = 313;
 
-            // Scrollbereich korrekt anpassen – exakt 20 px Rand zu jeder Seite sicherstellen
-            scrollPaddingPanel.Location = new Point(
-                panel1.Left + panel1.Width + (padding - panel1.Left),
-                panel1.Top + panel1.Height + (padding - panel1.Top)
-            );
+            panel1.Width = panel2.Width + 6;
+            panel1.Height = panel2.Height + 6;
+            panel1.Location = new Point(20, 20);
 
-            // Zeichenfläche zentrieren
-            CenterPanelInTabPage();
+            // 4. Eingabesteuerelemente zurücksetzen
+            ResetInputControls();
+
+            // 5. Oberfläche synchronisieren
+            toolStripTextBox1.Text = panel2.Width.ToString();
+            toolStripTextBox2.Text = panel2.Height.ToString();
+            comboBox1.SelectedIndex = -1;
+
+            // Status und Scrollbereich aktualisieren
+            scrollPaddingPanel.Location = new Point(panel1.Right + 20, panel1.Bottom + 20);
+            toolStripStatusLabel2.Text = string.Format("panel2: {0} x {1}  panel1: {2} x {3}",
+                panel2.Width, panel2.Height, panel1.Width, panel1.Height);
+
+            // 6. Zeichenfläche anpassen
+            //if (panel2.Controls.Count > 0)
+            //    AutoResizeCanvas(panel2);
+            ResizeFormToFitLayout();
+            tabPage1.AutoScrollPosition = new Point(0, 0);
+
+            // 7. Fenstertitel aktualisieren
+            this.Text = "Grafikeditor – [Neues Layout]";
+
+            toolStripStatusLabel1.Text = panel2.Width.ToString() + " " + panel2.Height.ToString() +
+                                          "  " + panel1.Width.ToString() + " " + panel1.Height.ToString() +
+                                          "  " + tabPage1.Width.ToString() + " " + tabPage1.Height.ToString();
         }
     }
 }

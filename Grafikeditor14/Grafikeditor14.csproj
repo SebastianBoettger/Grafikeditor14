@@ -66,6 +66,27 @@
     <Compile Include="Core\EditorState.cs" />
     <Compile Include="Core\IEditorCommand.cs" />
     <Compile Include="Core\MoveCommand.cs" />
+    <Compile Include="Form1.Factory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Fields.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Highlight.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.IO.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Layout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Selection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.UndoRedo.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Klassen\PendingFieldProps.cs" />
     <Compile Include="Core\ResizeCommand.cs" />
     <Compile Include="Core\UndoRedoManager.cs" />
