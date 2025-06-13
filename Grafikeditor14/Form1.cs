@@ -259,112 +259,39 @@ namespace Grafikeditor14
 
         private readonly int minFormHeight = 1000;
         private readonly int safetyMargin = 5;
-        //private void panel2_SizeChanged(object sender, EventArgs e)
-        //{
-        //    int padding = 20;
-
-        //    // 🔁 Rahmen um das Zeichen-Panel mitziehen
-        //    panel1.Width = panel2.Width + 6;
-        //    panel1.Height = panel2.Height + 6;
-        //    panel1.Location = new Point(padding, padding);  // fester Abstand links/oben
-
-        //    // 🔁 Dynamische Fensterhöhe bei Bedarf (nur bei zwei Einträgen im Puffer)
-        //    if (zwischenspeicher_differenz.Count == 2)
-        //    {
-        //        if (zwischenspeicher_differenz[1] > 0 && panel2.Height >= 313)
-        //        {
-        //            int uiOverhead = zwischenspeicher_differenz[1];
-        //            int desiredHeight = this.Height + uiOverhead;
-
-        //            Rectangle wa = Screen.FromHandle(this.Handle).WorkingArea;
-        //            int screenMaxH = wa.Height - (2 * safetyMargin);
-
-        //            this.Height = Math.Min(Math.Max(desiredHeight, minFormHeight), screenMaxH);
-
-        //            int maxRow2 = screenMaxH - 598;
-        //            tableLayoutPanel1.RowStyles[2].Height =
-        //                Math.Min(tableLayoutPanel1.RowStyles[2].Height + uiOverhead, maxRow2);
-
-        //            tabControl1.Height += uiOverhead;
-
-        //            // Fenster neu zentrieren
-        //            int newX = (wa.Width - this.Width) / 2;
-        //            int newY = (wa.Height - this.Height) / 2;
-        //            this.Location = new Point(newX, newY);
-        //            panel1.Location = new Point(padding, padding);
-        //        }
-
-        //        if (zwischenspeicher_differenz[1] < 0 && panel2.Height >= 313)
-        //        {
-        //            if (tabPage1.Height > panel1.Height - 40)
-        //            {
-        //                int diff = tabPage1.Height - (panel1.Height - 40);
-
-        //                this.Height -= diff;
-        //                tableLayoutPanel1.RowStyles[2].Height -= diff;
-        //                tabControl1.Height -= diff;
-        //                tabPage1.Height -= diff;
-
-        //                Rectangle wa = Screen.FromHandle(this.Handle).WorkingArea;
-        //                int newX = (wa.Width - this.Width) / 2;
-        //                int newY = (wa.Height - this.Height) / 2;
-        //                this.Location = new Point(newX, newY);
-        //                panel1.Location = new Point(padding, padding);
-        //            }
-        //        }
-
-        //        zwischenspeicher_differenz.Clear();
-        //    }
-
-        //    // 🟩 Scrollbereich oben/links absichern (sichtbarer Rand bei Scrollen!)
-        //    tabPage1.AutoScroll = true;
-        //    tabPage1.AutoScrollMargin = new Size(padding, padding);
-        //    tabPage1.AutoScrollPosition = new Point(0, 0); // Reset erzwingen
-
-        //    // 🟪 Status aktualisieren
-        //    toolStripStatusLabel2.Text = string.Format(
-        //        "this.Height = {0}  tabControl1.Height = {1}",
-        //        this.Height, tabControl1.Height);
-
-        //    // 🔵 Zusätzlicher Scrollbereich unten/rechts
-        //    scrollPaddingPanel.Location = new Point(panel1.Right + padding, panel1.Bottom + padding);
-        //}
-
         private void panel2_SizeChanged(object sender, EventArgs e)
         {
             int padding = 20;
 
-            // Größe von panel1 festlegen (mit Rahmenzugabe von +6)
+            // Größe von panel1 anpassen – mit kleinem Rand (+6 = Rahmen)
             panel1.Width = panel2.Width + 6;
             panel1.Height = panel2.Height + 6;
-            panel1.Location = new Point(padding, padding);  // Abstand links/oben bleibt fix
+            panel1.Location = new Point(padding, padding); // Abstand links/oben
 
-            // Fensterhöhe dynamisch anpassen (wenn nötig)
+            // Dynamische Höhen- und Breitenanpassung
             if (zwischenspeicher_differenz.Count == 2)
             {
-                if (zwischenspeicher_differenz[1] > 0 && panel2.Height >= 313)
+                int diffWidth = zwischenspeicher_differenz[0];
+                int diffHeight = zwischenspeicher_differenz[1];
+
+                Rectangle wa = Screen.FromHandle(this.Handle).WorkingArea;
+
+                // === Höhe vergrößern ===
+                if (diffHeight > 0 && panel2.Height >= 313)
                 {
-                    int uiOverhead = zwischenspeicher_differenz[1];
-                    int desiredHeight = this.Height + uiOverhead;
-
-                    Rectangle wa = Screen.FromHandle(this.Handle).WorkingArea;
+                    int desiredHeight = this.Height + diffHeight;
                     int screenMaxH = wa.Height - (2 * safetyMargin);
-
                     this.Height = Math.Min(Math.Max(desiredHeight, minFormHeight), screenMaxH);
 
                     int maxRow2 = screenMaxH - 598;
                     tableLayoutPanel1.RowStyles[2].Height =
-                        Math.Min(tableLayoutPanel1.RowStyles[2].Height + uiOverhead, maxRow2);
+                        Math.Min(tableLayoutPanel1.RowStyles[2].Height + diffHeight, maxRow2);
 
-                    tabControl1.Height += uiOverhead;
-
-                    int newX = (wa.Width - this.Width) / 2;
-                    int newY = (wa.Height - this.Height) / 2;
-                    this.Location = new Point(newX, newY);
-                    panel1.Location = new Point(padding, padding);
+                    tabControl1.Height += diffHeight;
                 }
 
-                if (zwischenspeicher_differenz[1] < 0 && panel2.Height >= 313)
+                // === Höhe verkleinern ===
+                if (diffHeight < 0 && panel2.Height >= 313)
                 {
                     if (tabPage1.Height > panel1.Height - 40)
                     {
@@ -374,30 +301,47 @@ namespace Grafikeditor14
                         tableLayoutPanel1.RowStyles[2].Height -= diff;
                         tabControl1.Height -= diff;
                         tabPage1.Height -= diff;
-
-                        Rectangle wa = Screen.FromHandle(this.Handle).WorkingArea;
-                        int newX = (wa.Width - this.Width) / 2;
-                        int newY = (wa.Height - this.Height) / 2;
-                        this.Location = new Point(newX, newY);
-                        panel1.Location = new Point(padding, padding);
                     }
                 }
+
+                // === Breite vergrößern ===
+                if (diffWidth > 0)
+                {
+                    int desiredWidth = this.Width + diffWidth;
+                    int screenMaxW = wa.Width - (2 * safetyMargin);
+                    this.Width = Math.Min(desiredWidth, screenMaxW);
+                }
+
+                // === Breite verkleinern ===
+                if (diffWidth < 0)
+                {
+                    int newWidth = this.Width + diffWidth;
+                    int minWidth = 1000; // Mindestbreite sinnvoll anpassen
+                    int screenMaxW = wa.Width - (2 * safetyMargin);
+                    this.Width = Math.Max(Math.Min(newWidth, screenMaxW), minWidth);
+                }
+
+                // Fenster zentrieren
+                int newX = (wa.Width - this.Width) / 2;
+                int newY = (wa.Height - this.Height) / 2;
+                this.Location = new Point(newX, newY);
 
                 zwischenspeicher_differenz.Clear();
             }
 
-            // Scrollabstand absichern
+            // Scrollverhalten absichern
             tabPage1.AutoScroll = true;
             tabPage1.AutoScrollMargin = new Size(padding, padding);
-            tabPage1.AutoScrollPosition = new Point(0, 0);
+            tabPage1.AutoScrollPosition = new Point(0, 0); // Reset zwingend
 
-            // Korrigiert: Scrollbereich rechts/unten berechnen – basierend auf panel2!
-            scrollPaddingPanel.Location = new Point(panel2.Right + padding + 6, panel2.Bottom + padding + 6);
+            // Scrollgrenze unten/rechts korrekt setzen (nicht zu viel!)
+            scrollPaddingPanel.Location = new Point(panel2.Right + 6 + padding, panel2.Bottom + 6 + padding);
 
-            // Statusleiste aktualisieren
+            // Status
             toolStripStatusLabel2.Text = string.Format(
                 "panel2: {0} x {1}  panel1: {2} x {3}",
-                panel2.Width, panel2.Height, panel1.Width, panel1.Height);
+                panel2.Width, panel2.Height, panel1.Width, panel1.Height
+            );
         }
 
         // Raster
